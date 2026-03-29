@@ -8,4 +8,5 @@ dependencies = [
     "maturin>=1.12.6",
     "pytest>=9.0.2",
     "pytest-benchmark>=5.1.0",
+    "torch>=2.11.0",
 ]

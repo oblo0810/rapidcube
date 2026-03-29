@@ -274,4 +274,49 @@ impl Cube2x2 {
     pub fn to_binary(&self) -> String {
         format!("{:064b}", self.state)
     }
+    
+    pub fn do_moves(&mut self, moves: String) -> PyResult<()> {
+        for mv in moves.split_whitespace() {
+            match mv {
+                "U" => self.do_u_move()?,
+                "U'" | "U!" => self.do_u_prime_move()?,
+                "U2" => {
+                    self.do_u_move()?;
+                    self.do_u_move()?;
+                }
+                "D" => self.do_d_move()?,
+                "D'" | "D!" => self.do_d_prime_move()?,
+                "D2" => {
+                    self.do_d_move()?;
+                    self.do_d_move()?;
+                }
+                "R" => self.do_r_move()?,
+                "R'" | "R!" => self.do_r_prime_move()?,
+                "R2" => {
+                    self.do_r_move()?;
+                    self.do_r_move()?;
+                }
+                "L" => self.do_l_move()?,
+                "L'" | "L!" => self.do_l_prime_move()?,
+                "L2" => {
+                    self.do_l_move()?;
+                    self.do_l_move()?;
+                }
+                "F" => self.do_f_move()?,
+                "F'" | "F!" => self.do_f_prime_move()?,
+                "F2" => {
+                    self.do_f_move()?;
+                    self.do_f_move()?;
+                }
+                "B" => self.do_b_move()?,
+                "B'" | "B!" => self.do_b_prime_move()?,
+                "B2" => {
+                    self.do_b_move()?;
+                    self.do_b_move()?;
+                }
+                _ => continue,
+            }
+        }
+        Ok(())
+    }
 }
