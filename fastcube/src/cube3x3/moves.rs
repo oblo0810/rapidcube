@@ -1,0 +1,415 @@
+use pyo3::prelude::*;
+
+use super::Cube3x3;
+
+#[pymethods]
+impl Cube3x3 {
+    #[new]
+    pub fn new() -> Self {
+        let mut corners: u64 = 0;
+        for i in 0..8 {
+            corners |= (i as u64) << (i * 5);
+        }
+        let mut edges: u64 = 0;
+        for i in 0..12 {
+            edges |= (i as u64) << (i * 5);
+        }
+        Cube3x3 { corners, edges }
+    }
+
+    pub fn do_u_move(&mut self) -> PyResult<()> {
+        let u_mask = 0xFFFFF;
+        let u_face = self.corners & u_mask;
+        let rest = self.corners & !u_mask;
+        let rotated_u = ((u_face << 5) | (u_face >> 15)) & u_mask;
+        self.corners = rest | rotated_u;
+        Ok(())
+    }
+
+    pub fn do_u_prime_move(&mut self) -> PyResult<()> {
+        let u_mask = 0xFFFFF;
+        let u_face = self.corners & u_mask;
+        let rest = self.corners & !u_mask;
+        let rotated_u = ((u_face >> 5) | (u_face << 15)) & u_mask;
+        self.corners = rest | rotated_u;
+        Ok(())
+    }
+
+    pub fn do_d_move(&mut self) -> PyResult<()> {
+        let d_mask = 0xFFFFF00000;
+        let d_face = self.corners & d_mask;
+        let rest = self.corners & !d_mask;
+        let rotated_d = ((d_face << 5) | (d_face >> 15)) & d_mask;
+        self.corners = rest | rotated_d;
+        Ok(())
+    }
+
+    pub fn do_d_prime_move(&mut self) -> PyResult<()> {
+        let d_mask = 0xFFFFF00000;
+        let d_face = self.corners & d_mask;
+        let rest = self.corners & !d_mask;
+        let rotated_d = ((d_face >> 5) | (d_face << 15)) & d_mask;
+        self.corners = rest | rotated_d;
+        Ok(())
+    }
+
+    pub fn do_r_move(&mut self) -> PyResult<()> {
+        // R affects corners: 1 (UBR), 2 (UFR), 5 (DBR), 6 (DFR)
+        let c1 = (self.corners >> 5) & 0b11111;
+        let c2 = (self.corners >> 10) & 0b11111;
+        let c5 = (self.corners >> 25) & 0b11111;
+        let c6 = (self.corners >> 30) & 0b11111;
+
+        let new_c1 = Self::add_ori_corner(c2, 1); // UFR -> UBR (+1)
+        let new_c5 = Self::add_ori_corner(c1, 2); // UBR -> DBR (+2)
+        let new_c6 = Self::add_ori_corner(c5, 1); // DBR -> DFR (+1)
+        let new_c2 = Self::add_ori_corner(c6, 2); // DFR -> UFR (+2)
+
+        let clear_mask = !((0b11111 << 5) | (0b11111 << 10) | (0b11111 << 25) | (0b11111 << 30));
+        self.corners &= clear_mask;
+
+        self.corners |= new_c1 << 5;
+        self.corners |= new_c2 << 10;
+        self.corners |= new_c5 << 25;
+        self.corners |= new_c6 << 30;
+
+        Ok(())
+    }
+
+    pub fn do_r_prime_move(&mut self) -> PyResult<()> {
+        // R' affects corners: 1 (UBR), 2 (UFR), 5 (DBR), 6 (DFR)
+        let c1 = (self.corners >> 5) & 0b11111;
+        let c2 = (self.corners >> 10) & 0b11111;
+        let c5 = (self.corners >> 25) & 0b11111;
+        let c6 = (self.corners >> 30) & 0b11111;
+
+        let new_c2 = Self::add_ori_corner(c1, 2); // UBR -> UFR (+2)
+        let new_c1 = Self::add_ori_corner(c5, 1); // DBR -> UBR (+1)
+        let new_c5 = Self::add_ori_corner(c6, 2); // DFR -> DBR (+2)
+        let new_c6 = Self::add_ori_corner(c2, 1); // UFR -> DFR (+1)
+
+        let clear_mask = !((0b11111 << 5) | (0b11111 << 10) | (0b11111 << 25) | (0b11111 << 30));
+        self.corners &= clear_mask;
+
+        self.corners |= new_c1 << 5;
+        self.corners |= new_c2 << 10;
+        self.corners |= new_c5 << 25;
+        self.corners |= new_c6 << 30;
+
+        Ok(())
+    }
+
+    pub fn do_l_move(&mut self) -> PyResult<()> {
+        // L affects corners: 0 (UBL), 3 (UFL), 4 (DBL), 7 (DFL)
+        let c0 = self.corners & 0b11111;
+        let c3 = (self.corners >> 15) & 0b11111;
+        let c4 = (self.corners >> 20) & 0b11111;
+        let c7 = (self.corners >> 35) & 0b11111;
+
+        let new_c3 = Self::add_ori_corner(c0, 1); // UBL -> UFL (+1)
+        let new_c7 = Self::add_ori_corner(c3, 2); // UFL -> DFL (+2)
+        let new_c4 = Self::add_ori_corner(c7, 1); // DFL -> DBL (+1)
+        let new_c0 = Self::add_ori_corner(c4, 2); // DBL -> UBL (+2)
+
+        let clear_mask = !((0b11111) | (0b11111 << 15) | (0b11111 << 20) | (0b11111 << 35));
+        self.corners &= clear_mask;
+
+        self.corners |= new_c0;
+        self.corners |= new_c3 << 15;
+        self.corners |= new_c4 << 20;
+        self.corners |= new_c7 << 35;
+
+        Ok(())
+    }
+
+    pub fn do_l_prime_move(&mut self) -> PyResult<()> {
+        // L' affects corners: 0 (UBL), 3 (UFL), 4 (DBL), 7 (DFL)
+        let c0 = self.corners & 0b11111;
+        let c3 = (self.corners >> 15) & 0b11111;
+        let c4 = (self.corners >> 20) & 0b11111;
+        let c7 = (self.corners >> 35) & 0b11111;
+
+        let new_c0 = Self::add_ori_corner(c3, 2); // UFL -> UBL (+2)
+        let new_c4 = Self::add_ori_corner(c0, 1); // UBL -> DBL (+1)
+        let new_c7 = Self::add_ori_corner(c4, 2); // DBL -> DFL (+2)
+        let new_c3 = Self::add_ori_corner(c7, 1); // DFL -> UFL (+1)
+
+        let clear_mask = !((0b11111) | (0b11111 << 15) | (0b11111 << 20) | (0b11111 << 35));
+        self.corners &= clear_mask;
+
+        self.corners |= new_c0;
+        self.corners |= new_c3 << 15;
+        self.corners |= new_c4 << 20;
+        self.corners |= new_c7 << 35;
+
+        Ok(())
+    }
+
+    pub fn do_f_move(&mut self) -> PyResult<()> {
+        // F affects corners: 2 (UFR), 3 (UFL), 6 (DFR), 7 (DFL)
+        let c2 = (self.corners >> 10) & 0b11111;
+        let c3 = (self.corners >> 15) & 0b11111;
+        let c6 = (self.corners >> 30) & 0b11111;
+        let c7 = (self.corners >> 35) & 0b11111;
+
+        let new_c2 = Self::add_ori_corner(c3, 1); // UFL -> UFR (+1)
+        let new_c6 = Self::add_ori_corner(c2, 2); // UFR -> DFR (+2)
+        let new_c7 = Self::add_ori_corner(c6, 1); // DFR -> DFL (+1)
+        let new_c3 = Self::add_ori_corner(c7, 2); // DFL -> UFL (+2)
+
+        let clear_mask = !((0b11111 << 10) | (0b11111 << 15) | (0b11111 << 30) | (0b11111 << 35));
+        self.corners &= clear_mask;
+
+        self.corners |= new_c2 << 10;
+        self.corners |= new_c3 << 15;
+        self.corners |= new_c6 << 30;
+        self.corners |= new_c7 << 35;
+
+        Ok(())
+    }
+
+    pub fn do_f_prime_move(&mut self) -> PyResult<()> {
+        // F' affects corners: 2 (UFR), 3 (UFL), 6 (DFR), 7 (DFL)
+        let c2 = (self.corners >> 10) & 0b11111;
+        let c3 = (self.corners >> 15) & 0b11111;
+        let c6 = (self.corners >> 30) & 0b11111;
+        let c7 = (self.corners >> 35) & 0b11111;
+
+        let new_c3 = Self::add_ori_corner(c2, 2); // UFR -> UFL (+2)
+        let new_c7 = Self::add_ori_corner(c3, 1); // UFL -> DFL (+1)
+        let new_c6 = Self::add_ori_corner(c7, 2); // DFL -> DFR (+2)
+        let new_c2 = Self::add_ori_corner(c6, 1); // DFR -> UFR (+1)
+
+        let clear_mask = !((0b11111 << 10) | (0b11111 << 15) | (0b11111 << 30) | (0b11111 << 35));
+        self.corners &= clear_mask;
+
+        self.corners |= new_c2 << 10;
+        self.corners |= new_c3 << 15;
+        self.corners |= new_c6 << 30;
+        self.corners |= new_c7 << 35;
+
+        Ok(())
+    }
+
+    pub fn do_b_move(&mut self) -> PyResult<()> {
+        // B affects corners: 0 (UBL), 1 (UBR), 4 (DBL), 5 (DBR)
+        let c0 = self.corners & 0b11111;
+        let c1 = (self.corners >> 5) & 0b11111;
+        let c4 = (self.corners >> 20) & 0b11111;
+        let c5 = (self.corners >> 25) & 0b11111;
+
+        let new_c0 = Self::add_ori_corner(c1, 1); // UBR -> UBL (+1)
+        let new_c4 = Self::add_ori_corner(c0, 2); // UBL -> DBL (+2)
+        let new_c5 = Self::add_ori_corner(c4, 1); // DBL -> DBR (+1)
+        let new_c1 = Self::add_ori_corner(c5, 2); // DBR -> UBR (+2)
+
+        let clear_mask = !((0b11111) | (0b11111 << 5) | (0b11111 << 20) | (0b11111 << 25));
+        self.corners &= clear_mask;
+
+        self.corners |= new_c0;
+        self.corners |= new_c1 << 5;
+        self.corners |= new_c4 << 20;
+        self.corners |= new_c5 << 25;
+
+        Ok(())
+    }
+
+    pub fn do_b_prime_move(&mut self) -> PyResult<()> {
+        // B' affects corners: 0 (UBL), 1 (UBR), 4 (DBL), 5 (DBR)
+        let c0 = self.corners & 0b11111;
+        let c1 = (self.corners >> 5) & 0b11111;
+        let c4 = (self.corners >> 20) & 0b11111;
+        let c5 = (self.corners >> 25) & 0b11111;
+
+        let new_c1 = Self::add_ori_corner(c0, 2); // UBL -> UBR (+2)
+        let new_c5 = Self::add_ori_corner(c1, 1); // UBR -> DBR (+1)
+        let new_c4 = Self::add_ori_corner(c5, 2); // DBR -> DBL (+2)
+        let new_c0 = Self::add_ori_corner(c4, 1); // DBL -> UBL (+1)
+
+        let clear_mask = !((0b11111) | (0b11111 << 5) | (0b11111 << 20) | (0b11111 << 25));
+        self.corners &= clear_mask;
+
+        self.corners |= new_c0;
+        self.corners |= new_c1 << 5;
+        self.corners |= new_c4 << 20;
+        self.corners |= new_c5 << 25;
+
+        Ok(())
+    }
+
+    fn __str__(&self) -> String {
+        let uc = Self::ansi_color('W');
+        let lc = Self::ansi_color('O');
+        let fc = Self::ansi_color('G');
+        let rc = Self::ansi_color('R');
+        let bc = Self::ansi_color('B');
+        let dc = Self::ansi_color('Y');
+
+        // U face
+        let u00 = self.get_corner_sticker(0, 0);
+        let u01 = self.get_edge_sticker(0, 0);
+        let u02 = self.get_corner_sticker(1, 0);
+        let u10 = self.get_edge_sticker(3, 0);
+        let u12 = self.get_edge_sticker(1, 0);
+        let u20 = self.get_corner_sticker(3, 0);
+        let u21 = self.get_edge_sticker(2, 0);
+        let u22 = self.get_corner_sticker(2, 0);
+
+        // L face
+        let l00 = self.get_corner_sticker(0, 2);
+        let l01 = self.get_edge_sticker(3, 1);
+        let l02 = self.get_corner_sticker(3, 1);
+        let l10 = self.get_edge_sticker(8, 1);
+        let l12 = self.get_edge_sticker(11, 0);
+        let l20 = self.get_corner_sticker(4, 1);
+        let l21 = self.get_edge_sticker(7, 1);
+        let l22 = self.get_corner_sticker(7, 2);
+
+        // F face
+        let f00 = self.get_corner_sticker(3, 2);
+        let f01 = self.get_edge_sticker(2, 1);
+        let f02 = self.get_corner_sticker(2, 1);
+        let f10 = self.get_edge_sticker(11, 1);
+        let f12 = self.get_edge_sticker(10, 0);
+        let f20 = self.get_corner_sticker(7, 1);
+        let f21 = self.get_edge_sticker(6, 1);
+        let f22 = self.get_corner_sticker(6, 2);
+
+        // R face
+        let r00 = self.get_corner_sticker(2, 2);
+        let r01 = self.get_edge_sticker(1, 1);
+        let r02 = self.get_corner_sticker(1, 1);
+        let r10 = self.get_edge_sticker(10, 1);
+        let r12 = self.get_edge_sticker(9, 0);
+        let r20 = self.get_corner_sticker(6, 1);
+        let r21 = self.get_edge_sticker(5, 1);
+        let r22 = self.get_corner_sticker(5, 2);
+
+        // B face
+        let b00 = self.get_corner_sticker(1, 2);
+        let b01 = self.get_edge_sticker(0, 1);
+        let b02 = self.get_corner_sticker(0, 1);
+        let b10 = self.get_edge_sticker(9, 1);
+        let b12 = self.get_edge_sticker(8, 0);
+        let b20 = self.get_corner_sticker(5, 1);
+        let b21 = self.get_edge_sticker(4, 1);
+        let b22 = self.get_corner_sticker(4, 2);
+
+        // D face
+        let d00 = self.get_corner_sticker(7, 0);
+        let d01 = self.get_edge_sticker(6, 0);
+        let d02 = self.get_corner_sticker(6, 0);
+        let d10 = self.get_edge_sticker(7, 0);
+        let d12 = self.get_edge_sticker(5, 0);
+        let d20 = self.get_corner_sticker(4, 0);
+        let d21 = self.get_edge_sticker(4, 0);
+        let d22 = self.get_corner_sticker(5, 0);
+
+        format!(
+            "       {} {} {}\n       {} {} {}\n       {} {} {}\n{} {} {}  {} {} {}  {} {} {}  {} {} {}\n{} {} {}  {} {} {}  {} {} {}  {} {} {}\n{} {} {}  {} {} {}  {} {} {}  {} {} {}\n       {} {} {}\n       {} {} {}\n       {} {} {}\n",
+            u00,
+            u01,
+            u02,
+            u10,
+            uc,
+            u12,
+            u20,
+            u21,
+            u22,
+            l00,
+            l01,
+            l02,
+            f00,
+            f01,
+            f02,
+            r00,
+            r01,
+            r02,
+            b00,
+            b01,
+            b02,
+            l10,
+            lc,
+            l12,
+            f10,
+            fc,
+            f12,
+            r10,
+            rc,
+            r12,
+            b10,
+            bc,
+            b12,
+            l20,
+            l21,
+            l22,
+            f20,
+            f21,
+            f22,
+            r20,
+            r21,
+            r22,
+            b20,
+            b21,
+            b22,
+            d00,
+            d01,
+            d02,
+            d10,
+            dc,
+            d12,
+            d20,
+            d21,
+            d22,
+        )
+    }
+
+    pub fn to_binary(&self) -> String {
+        format!("{:064b}", self.corners)
+    }
+    
+    pub fn do_moves(&mut self, moves: String) -> PyResult<()> {
+        for mv in moves.split_whitespace() {
+            match mv {
+                "U" => self.do_u_move()?,
+                "U'" | "U!" => self.do_u_prime_move()?,
+                "U2" => {
+                    self.do_u_move()?;
+                    self.do_u_move()?;
+                }
+                "D" => self.do_d_move()?,
+                "D'" | "D!" => self.do_d_prime_move()?,
+                "D2" => {
+                    self.do_d_move()?;
+                    self.do_d_move()?;
+                }
+                "R" => self.do_r_move()?,
+                "R'" | "R!" => self.do_r_prime_move()?,
+                "R2" => {
+                    self.do_r_move()?;
+                    self.do_r_move()?;
+                }
+                "L" => self.do_l_move()?,
+                "L'" | "L!" => self.do_l_prime_move()?,
+                "L2" => {
+                    self.do_l_move()?;
+                    self.do_l_move()?;
+                }
+                "F" => self.do_f_move()?,
+                "F'" | "F!" => self.do_f_prime_move()?,
+                "F2" => {
+                    self.do_f_move()?;
+                    self.do_f_move()?;
+                }
+                "B" => self.do_b_move()?,
+                "B'" | "B!" => self.do_b_prime_move()?,
+                "B2" => {
+                    self.do_b_move()?;
+                    self.do_b_move()?;
+                }
+                _ => continue,
+            }
+        }
+        Ok(())
+    }
+}
