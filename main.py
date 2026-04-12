@@ -46,7 +46,7 @@ def test_3x3():
     #     print("Doing Move: " + m + "\n")
     #     cube.do_moves(m)
     #     print(cube)
-    cube.do_moves("D")
+    cube.do_moves("R")
     print(cube)
 
 
@@ -67,4 +67,4 @@ def encode_state():
 
 if __name__ == "__main__":
     _ = encode_state()
-    main()
+    test_3x3()

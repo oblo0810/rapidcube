@@ -19,28 +19,6 @@ impl Cube3x3 {
         Cube3x3 { corners, edges }
     }
 
-    pub fn rotate_corners(&mut self, i0: u64, i1: u64, i2: u64, i3: u64) {
-        // R affects corners: 1 (UBR), 2 (UFR), 5 (DBR), 6 (DFR)
-        let c1 = (self.corners >> 5) & 0b11111;
-        let c2 = (self.corners >> 10) & 0b11111;
-        let c5 = (self.corners >> 25) & 0b11111;
-        let c6 = (self.corners >> 30) & 0b11111;
-
-        let new_c1 = Self::add_ori_corner(c2, 1); // UFR -> UBR (+1)
-        let new_c5 = Self::add_ori_corner(c1, 2); // UBR -> DBR (+2)
-        let new_c6 = Self::add_ori_corner(c5, 1); // DBR -> DFR (+1)
-        let new_c2 = Self::add_ori_corner(c6, 2); // DFR -> UFR (+2)
-
-        let clear_mask = !((0b11111 << 5) | (0b11111 << 10) | (0b11111 << 25) | (0b11111 << 30));
-        self.corners &= clear_mask;
-
-        self.corners |= new_c1 << 5;
-        self.corners |= new_c2 << 10;
-        self.corners |= new_c5 << 25;
-        self.corners |= new_c6 << 30;
-    }
-
-
     pub fn rotate_edges(&mut self, i0: u64, i1: u64, i2: u64, i3: u64, ori: u64) {
         let e0 = (self.edges >> i0) & 0b11111;
         let e1 = (self.edges >> i1) & 0b11111;
