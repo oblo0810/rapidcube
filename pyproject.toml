@@ -5,7 +5,9 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "magiccube>=1.2.0",
     "maturin>=1.12.6",
+    "pycuber>=0.2.2",
     "pytest>=9.0.2",
     "pytest-benchmark>=5.1.0",
     "torch>=2.11.0",
