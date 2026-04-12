@@ -10,50 +10,144 @@ impl Cube3x3 {
         for i in 0..8 {
             corners |= (i as u64) << (i * 5);
         }
+
         let mut edges: u64 = 0;
         for i in 0..12 {
             edges |= (i as u64) << (i * 5);
         }
+        
         Cube3x3 { corners, edges }
     }
 
-    pub fn do_u_move(&mut self) -> PyResult<()> {
+    pub fn rotate_edges(&mut self, i0: u64, i1: u64, i2: u64, i3: u64, ori: u64) {
+        let e0 = (self.edges >> i0) & 0b11111;
+        let e1 = (self.edges >> i1) & 0b11111;
+        let e2 = (self.edges >> i2) & 0b11111;
+        let e3 = (self.edges >> i3) & 0b11111;
+
+        let new_e0 = Self::add_ori_edge(e3, ori);
+        let new_e1 = Self::add_ori_edge(e0, ori);
+        let new_e2 = Self::add_ori_edge(e1, ori);
+        let new_e3 = Self::add_ori_edge(e2, ori);
+
+        let clear_mask = !((0b11111 << i0) | (0b11111 << i1) | (0b11111 << i2) | (0b11111 << i3));
+        self.edges &= clear_mask;
+
+        self.edges |= new_e0 << i0;
+        self.edges |= new_e1 << i1;
+        self.edges |= new_e2 << i2;
+        self.edges |= new_e3 << i3;
+    }
+
+    pub fn rotate_edges_prime(&mut self, i0: u64, i1: u64, i2: u64, i3: u64, ori: u64) {
+        let e0 = (self.edges >> i0) & 0b11111;
+        let e1 = (self.edges >> i1) & 0b11111;
+        let e2 = (self.edges >> i2) & 0b11111;
+        let e3 = (self.edges >> i3) & 0b11111;
+
+        let new_e0 = Self::add_ori_edge(e1, ori);
+        let new_e1 = Self::add_ori_edge(e2, ori);
+        let new_e2 = Self::add_ori_edge(e3, ori);
+        let new_e3 = Self::add_ori_edge(e0, ori);
+
+        let clear_mask = !((0b11111 << i0) | (0b11111 << i1) | (0b11111 << i2) | (0b11111 << i3));
+        self.edges &= clear_mask;
+
+        self.edges |= new_e0 << i0;
+        self.edges |= new_e1 << i1;
+        self.edges |= new_e2 << i2;
+        self.edges |= new_e3 << i3;
+    }
+
+    pub fn do_u_move_corners(&mut self) {
         let u_mask = 0xFFFFF;
         let u_face = self.corners & u_mask;
         let rest = self.corners & !u_mask;
         let rotated_u = ((u_face << 5) | (u_face >> 15)) & u_mask;
         self.corners = rest | rotated_u;
+    }
+
+    pub fn do_u_move_edges(&mut self) {
+        let u_mask = 0xFFFFF;
+        let u_face = self.edges & u_mask;
+        let rest = self.edges & !u_mask;
+        let rotated_u = ((u_face << 5) | (u_face >> 15)) & u_mask;
+        self.edges = rest | rotated_u;
+    }
+
+    pub fn do_u_move(&mut self) -> PyResult<()> {
+        self.do_u_move_corners();
+        self.do_u_move_edges();
         Ok(())
     }
 
-    pub fn do_u_prime_move(&mut self) -> PyResult<()> {
+    pub fn do_u_prime_move_corners(&mut self) {
         let u_mask = 0xFFFFF;
         let u_face = self.corners & u_mask;
         let rest = self.corners & !u_mask;
         let rotated_u = ((u_face >> 5) | (u_face << 15)) & u_mask;
         self.corners = rest | rotated_u;
+    }
+
+    pub fn do_u_prime_move_edges(&mut self) {
+        let u_mask = 0xFFFFF;
+        let u_face = self.edges & u_mask;
+        let rest = self.edges & !u_mask;
+        let rotated_u = ((u_face >> 5) | (u_face << 15)) & u_mask;
+        self.edges = rest | rotated_u;
+    }
+
+    pub fn do_u_prime_move(&mut self) -> PyResult<()> {
+        self.do_u_prime_move_corners();
+        self.do_u_prime_move_edges();
         Ok(())
     }
 
-    pub fn do_d_move(&mut self) -> PyResult<()> {
+    pub fn do_d_move_corners(&mut self) {
         let d_mask = 0xFFFFF00000;
         let d_face = self.corners & d_mask;
         let rest = self.corners & !d_mask;
         let rotated_d = ((d_face << 5) | (d_face >> 15)) & d_mask;
         self.corners = rest | rotated_d;
+    }
+
+    pub fn do_d_move_edges(&mut self) {
+        let d_mask = 0xFFFFF00000;
+        let d_face = self.edges & d_mask;
+        let rest = self.edges & !d_mask;
+        let rotated_d = ((d_face << 5) | (d_face >> 15)) & d_mask;
+        self.edges = rest | rotated_d;
+    }
+
+    pub fn do_d_move(&mut self) -> PyResult<()> {
+        self.do_d_move_corners();
+        self.do_d_move_edges();
         Ok(())
     }
 
-    pub fn do_d_prime_move(&mut self) -> PyResult<()> {
+    pub fn do_d_prime_move_corners(&mut self) {
         let d_mask = 0xFFFFF00000;
         let d_face = self.corners & d_mask;
         let rest = self.corners & !d_mask;
         let rotated_d = ((d_face >> 5) | (d_face << 15)) & d_mask;
         self.corners = rest | rotated_d;
+    }
+
+    pub fn do_d_prime_move_edges(&mut self) {
+        let d_mask = 0xFFFFF00000;
+        let d_face = self.edges & d_mask;
+        let rest = self.edges & !d_mask;
+        let rotated_d = ((d_face >> 5) | (d_face << 15)) & d_mask;
+        self.edges = rest | rotated_d;
+    }
+
+    pub fn do_d_prime_move(&mut self) -> PyResult<()> {
+        self.do_d_prime_move_corners();
+        self.do_d_prime_move_edges();
         Ok(())
     }
 
-    pub fn do_r_move(&mut self) -> PyResult<()> {
+    pub fn do_r_move_corners(&mut self) {
         // R affects corners: 1 (UBR), 2 (UFR), 5 (DBR), 6 (DFR)
         let c1 = (self.corners >> 5) & 0b11111;
         let c2 = (self.corners >> 10) & 0b11111;
@@ -72,11 +166,15 @@ impl Cube3x3 {
         self.corners |= new_c2 << 10;
         self.corners |= new_c5 << 25;
         self.corners |= new_c6 << 30;
+    }
 
+    pub fn do_r_move(&mut self) -> PyResult<()> {
+        self.do_r_move_corners();
+        self.rotate_edges(5, 45, 25, 50, 0);
         Ok(())
     }
 
-    pub fn do_r_prime_move(&mut self) -> PyResult<()> {
+    pub fn do_r_prime_move_corners(&mut self) {
         // R' affects corners: 1 (UBR), 2 (UFR), 5 (DBR), 6 (DFR)
         let c1 = (self.corners >> 5) & 0b11111;
         let c2 = (self.corners >> 10) & 0b11111;
@@ -95,9 +193,14 @@ impl Cube3x3 {
         self.corners |= new_c2 << 10;
         self.corners |= new_c5 << 25;
         self.corners |= new_c6 << 30;
+    }
 
+    pub fn do_r_prime_move(&mut self) -> PyResult<()> {
+        self.do_r_prime_move_corners();
+        self.rotate_edges_prime(5, 45, 25, 50, 0);
         Ok(())
     }
+
 
     pub fn do_l_move(&mut self) -> PyResult<()> {
         // L affects corners: 0 (UBL), 3 (UFL), 4 (DBL), 7 (DFL)
@@ -280,7 +383,7 @@ impl Cube3x3 {
         let r01 = self.get_edge_sticker(1, 1);
         let r02 = self.get_corner_sticker(1, 1);
         let r10 = self.get_edge_sticker(10, 1);
-        let r12 = self.get_edge_sticker(9, 0);
+        let r12 = self.get_edge_sticker(9, 1);
         let r20 = self.get_corner_sticker(6, 1);
         let r21 = self.get_edge_sticker(5, 1);
         let r22 = self.get_corner_sticker(5, 2);
@@ -289,7 +392,7 @@ impl Cube3x3 {
         let b00 = self.get_corner_sticker(1, 2);
         let b01 = self.get_edge_sticker(0, 1);
         let b02 = self.get_corner_sticker(0, 1);
-        let b10 = self.get_edge_sticker(9, 1);
+        let b10 = self.get_edge_sticker(9, 0);
         let b12 = self.get_edge_sticker(8, 0);
         let b20 = self.get_corner_sticker(5, 1);
         let b21 = self.get_edge_sticker(4, 1);

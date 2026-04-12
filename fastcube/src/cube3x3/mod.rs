@@ -34,7 +34,7 @@ impl Cube3x3 {
     fn add_ori_edge(edge: u64, amount: u64) -> u64 {
         let pos = edge & 0b1111;
         let ori = edge >> 4;
-        let new_ori = (ori + amount) % 3;
+        let new_ori = (ori + amount) % 2;
         pos | (new_ori << 4)
     }
 }

@@ -1,4 +1,4 @@
-from fastcube import Cube2x2
+from fastcube import Cube2x2, Cube3x3
 import torch
 
 
@@ -19,6 +19,23 @@ def main():
     print(cube)
 
 
+def test_3x3():
+    cube = Cube3x3()
+    print(cube)
+    cube.do_u_prime_move()
+    print(cube)
+    cube.do_d_move()
+    print(cube)
+    cube.do_u_move()
+    print(cube)
+    cube.do_d_prime_move()
+    print(cube)
+    cube.do_r_move()
+    print(cube)
+    cube.do_r_prime_move()
+    print(cube)
+
+
 def encode_state():
     cube = Cube2x2()
     str_state = "00" + "{0:b}".format(cube.state)
@@ -36,4 +53,4 @@ def encode_state():
 
 if __name__ == "__main__":
     _ = encode_state()
-    main()
+    test_3x3()
