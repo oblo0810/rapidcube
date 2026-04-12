@@ -35,7 +35,7 @@ impl Cube2x2 {
         let d_mask = 0xFFFFF00000;
         let d_face = self.state & d_mask;
         let rest = self.state & !d_mask;
-        let rotated_d = ((d_face << 5) | (d_face >> 15)) & d_mask;
+        let rotated_d = ((d_face >> 5) | (d_face << 15)) & d_mask;
         self.state = rest | rotated_d;
         Ok(())
     }
@@ -44,7 +44,7 @@ impl Cube2x2 {
         let d_mask = 0xFFFFF00000;
         let d_face = self.state & d_mask;
         let rest = self.state & !d_mask;
-        let rotated_d = ((d_face >> 5) | (d_face << 15)) & d_mask;
+        let rotated_d = ((d_face << 5) | (d_face >> 15)) & d_mask;
         self.state = rest | rotated_d;
         Ok(())
     }

@@ -1,3 +1,5 @@
+use pyo3::prelude::*;
+
 use super::Cube3x3;
 
 impl Cube3x3 {
@@ -47,7 +49,7 @@ impl Cube3x3 {
             ['B', 'O'], // 8:  BL
             ['B', 'R'], // 9:  BR
             ['G', 'R'], // 10: FR
-            ['O', 'G'], // 11: FL
+            ['G', 'O'], // 11: FL
         ];
 
         let (piece, orientation) = self.get_edge_internal(pos);
@@ -55,6 +57,136 @@ impl Cube3x3 {
         let char_color = EDGE_COLORS[piece as usize][color_index];
 
         Self::ansi_color(char_color)
+    }
+}
+
+#[pymethods]
+impl Cube3x3 {
+    fn __str__(&self) -> String {
+        let uc = Self::ansi_color('W');
+        let lc = Self::ansi_color('O');
+        let fc = Self::ansi_color('G');
+        let rc = Self::ansi_color('R');
+        let bc = Self::ansi_color('B');
+        let dc = Self::ansi_color('Y');
+
+        // U face
+        let u00 = self.get_corner_sticker(0, 0);
+        let u01 = self.get_edge_sticker(0, 0);
+        let u02 = self.get_corner_sticker(1, 0);
+        let u10 = self.get_edge_sticker(3, 0);
+        let u12 = self.get_edge_sticker(1, 0);
+        let u20 = self.get_corner_sticker(3, 0);
+        let u21 = self.get_edge_sticker(2, 0);
+        let u22 = self.get_corner_sticker(2, 0);
+
+        // L face
+        let l00 = self.get_corner_sticker(0, 2);
+        let l01 = self.get_edge_sticker(3, 1);
+        let l02 = self.get_corner_sticker(3, 1);
+        let l10 = self.get_edge_sticker(8, 1);
+        let l12 = self.get_edge_sticker(11, 1);
+        let l20 = self.get_corner_sticker(4, 1);
+        let l21 = self.get_edge_sticker(7, 1);
+        let l22 = self.get_corner_sticker(7, 2);
+
+        // F face
+        let f00 = self.get_corner_sticker(3, 2);
+        let f01 = self.get_edge_sticker(2, 1);
+        let f02 = self.get_corner_sticker(2, 1);
+        let f10 = self.get_edge_sticker(11, 0);
+        let f12 = self.get_edge_sticker(10, 0);
+        let f20 = self.get_corner_sticker(7, 1);
+        let f21 = self.get_edge_sticker(6, 1);
+        let f22 = self.get_corner_sticker(6, 2);
+
+        // R face
+        let r00 = self.get_corner_sticker(2, 2);
+        let r01 = self.get_edge_sticker(1, 1);
+        let r02 = self.get_corner_sticker(1, 1);
+        let r10 = self.get_edge_sticker(10, 1);
+        let r12 = self.get_edge_sticker(9, 1);
+        let r20 = self.get_corner_sticker(6, 1);
+        let r21 = self.get_edge_sticker(5, 1);
+        let r22 = self.get_corner_sticker(5, 2);
+
+        // B face
+        let b00 = self.get_corner_sticker(1, 2);
+        let b01 = self.get_edge_sticker(0, 1);
+        let b02 = self.get_corner_sticker(0, 1);
+        let b10 = self.get_edge_sticker(9, 0);
+        let b12 = self.get_edge_sticker(8, 0);
+        let b20 = self.get_corner_sticker(5, 1);
+        let b21 = self.get_edge_sticker(4, 1);
+        let b22 = self.get_corner_sticker(4, 2);
+
+        // D face
+        let d00 = self.get_corner_sticker(7, 0);
+        let d01 = self.get_edge_sticker(6, 0);
+        let d02 = self.get_corner_sticker(6, 0);
+        let d10 = self.get_edge_sticker(7, 0);
+        let d12 = self.get_edge_sticker(5, 0);
+        let d20 = self.get_corner_sticker(4, 0);
+        let d21 = self.get_edge_sticker(4, 0);
+        let d22 = self.get_corner_sticker(5, 0);
+
+        format!(
+            "       {} {} {}\n       {} {} {}\n       {} {} {}\n{} {} {}  {} {} {}  {} {} {}  {} {} {}\n{} {} {}  {} {} {}  {} {} {}  {} {} {}\n{} {} {}  {} {} {}  {} {} {}  {} {} {}\n       {} {} {}\n       {} {} {}\n       {} {} {}\n",
+            u00,
+            u01,
+            u02,
+            u10,
+            uc,
+            u12,
+            u20,
+            u21,
+            u22,
+            l00,
+            l01,
+            l02,
+            f00,
+            f01,
+            f02,
+            r00,
+            r01,
+            r02,
+            b00,
+            b01,
+            b02,
+            l10,
+            lc,
+            l12,
+            f10,
+            fc,
+            f12,
+            r10,
+            rc,
+            r12,
+            b10,
+            bc,
+            b12,
+            l20,
+            l21,
+            l22,
+            f20,
+            f21,
+            f22,
+            r20,
+            r21,
+            r22,
+            b20,
+            b21,
+            b22,
+            d00,
+            d01,
+            d02,
+            d10,
+            dc,
+            d12,
+            d20,
+            d21,
+            d22,
+        )
     }
 }
 
