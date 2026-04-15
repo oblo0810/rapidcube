@@ -1,8 +1,8 @@
-import fastcube
+import rapidcube
 import magiccube
 import pycuber
 
-Cube2x2 = fastcube.Cube2x2
+Cube2x2 = rapidcube.Cube2x2
 
 
 def test_benchmark_construct_cube(benchmark):

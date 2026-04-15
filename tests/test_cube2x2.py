@@ -1,8 +1,8 @@
 import unittest
 
-import fastcube
+import rapidcube
 
-Cube2x2 = fastcube.Cube2x2
+Cube2x2 = rapidcube.Cube2x2
 
 
 MOVE_PAIRS = [

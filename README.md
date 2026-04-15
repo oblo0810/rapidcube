@@ -1,6 +1,6 @@
-# fastcube
+# rapidcube
 
-fastcube is a high-performance Rubik's Cube simulator for Python, implemented in Rust with PyO3.
+rapidcube is a high-performance Rubik's Cube simulator for Python, implemented in Rust with PyO3.
 
 It is designed for fast state transitions, algorithm simulation, and experimentation workflows such as search, benchmarking, and machine learning.
 
@@ -27,7 +27,7 @@ Requirements:
 
 ```bash
 git clone <your-repo-url>
-cd fastcube/fastcube
+cd rapidcube/rapidcube
 python -m pip install maturin
 maturin develop --release
 ```
@@ -37,7 +37,7 @@ maturin develop --release
 ### 2x2 Example
 
 ```python
-from fastcube import Cube2x2
+from rapidcube import Cube2x2
 
 cube = Cube2x2()
 print(cube)
@@ -51,7 +51,7 @@ print("Binary encoding:", cube.to_binary())
 ### 3x3 Example
 
 ```python
-from fastcube import Cube3x3
+from rapidcube import Cube3x3
 
 cube = Cube3x3()
 cube.do_moves("F R U R' U' F'")

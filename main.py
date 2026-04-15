@@ -1,4 +1,4 @@
-from fastcube import Cube2x2, Cube3x3
+from rapidcube import Cube2x2, Cube3x3
 import torch
 
 
