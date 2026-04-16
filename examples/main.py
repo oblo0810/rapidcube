@@ -1,5 +1,5 @@
 from rapidcube import Cube2x2, Cube3x3
-import torch
+# import torch
 
 
 def main():
@@ -50,21 +50,21 @@ def test_3x3():
     print(cube)
 
 
-def encode_state():
-    cube = Cube2x2()
-    str_state = "00" + "{0:b}".format(cube.state)
-    segments = [
-        str_state[max(0, end - 5) : end] for end in range(len(str_state), 0, -5)
-    ][::-1]
-    int_segments = [[int(s[:2], 2), int(s[2:], 2)] for s in segments]
+# def encode_state():
+#     cube = Cube2x2()
+#     str_state = "00" + "{0:b}".format(cube.state)
+#     segments = [
+#         str_state[max(0, end - 5) : end] for end in range(len(str_state), 0, -5)
+#     ][::-1]
+#     int_segments = [[int(s[:2], 2), int(s[2:], 2)] for s in segments]
 
-    tensor = torch.tensor(int_segments)
-    # print(str_state)
-    # print(segments)
-    # print(tensor)
-    return tensor
+#     tensor = torch.tensor(int_segments)
+#     # print(str_state)
+#     # print(segments)
+#     # print(tensor)
+#     return tensor
 
 
 if __name__ == "__main__":
-    _ = encode_state()
+    # _ = encode_state()
     test_3x3()
