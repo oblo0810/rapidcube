@@ -5,6 +5,7 @@ use super::Cube2x2;
 #[pymethods]
 impl Cube2x2 {
     #[new]
+    /// Create a solved 2x2 cube state.
     pub fn new() -> Self {
         let mut state: u64 = 0;
         for i in 0..8 {
@@ -13,6 +14,7 @@ impl Cube2x2 {
         Cube2x2 { state }
     }
 
+    /// Apply the U move (clockwise top face turn).
     pub fn do_u_move(&mut self) -> PyResult<()> {
         let u_mask = 0xFFFFF;
         let u_face = self.state & u_mask;
@@ -22,6 +24,7 @@ impl Cube2x2 {
         Ok(())
     }
 
+    /// Apply the U' move (counterclockwise top face turn).
     pub fn do_u_prime_move(&mut self) -> PyResult<()> {
         let u_mask = 0xFFFFF;
         let u_face = self.state & u_mask;
@@ -31,6 +34,7 @@ impl Cube2x2 {
         Ok(())
     }
 
+    /// Apply the D move (clockwise bottom face turn).
     pub fn do_d_move(&mut self) -> PyResult<()> {
         let d_mask = 0xFFFFF00000;
         let d_face = self.state & d_mask;
@@ -40,6 +44,7 @@ impl Cube2x2 {
         Ok(())
     }
 
+    /// Apply the D' move (counterclockwise bottom face turn).
     pub fn do_d_prime_move(&mut self) -> PyResult<()> {
         let d_mask = 0xFFFFF00000;
         let d_face = self.state & d_mask;
@@ -49,6 +54,7 @@ impl Cube2x2 {
         Ok(())
     }
 
+    /// Apply the R move (clockwise right face turn).
     pub fn do_r_move(&mut self) -> PyResult<()> {
         // R affects corners: 1 (UBR), 2 (UFR), 5 (DBR), 6 (DFR)
         let c1 = (self.state >> 5) & 0b11111;
@@ -72,6 +78,7 @@ impl Cube2x2 {
         Ok(())
     }
 
+    /// Apply the R' move (counterclockwise right face turn).
     pub fn do_r_prime_move(&mut self) -> PyResult<()> {
         // R' affects corners: 1 (UBR), 2 (UFR), 5 (DBR), 6 (DFR)
         let c1 = (self.state >> 5) & 0b11111;
@@ -95,6 +102,7 @@ impl Cube2x2 {
         Ok(())
     }
 
+    /// Apply the L move (clockwise left face turn).
     pub fn do_l_move(&mut self) -> PyResult<()> {
         // L affects corners: 0 (UBL), 3 (UFL), 4 (DBL), 7 (DFL)
         let c0 = self.state & 0b11111;
@@ -118,6 +126,7 @@ impl Cube2x2 {
         Ok(())
     }
 
+    /// Apply the L' move (counterclockwise left face turn).
     pub fn do_l_prime_move(&mut self) -> PyResult<()> {
         // L' affects corners: 0 (UBL), 3 (UFL), 4 (DBL), 7 (DFL)
         let c0 = self.state & 0b11111;
@@ -141,6 +150,7 @@ impl Cube2x2 {
         Ok(())
     }
 
+    /// Apply the F move (clockwise front face turn).
     pub fn do_f_move(&mut self) -> PyResult<()> {
         // F affects corners: 2 (UFR), 3 (UFL), 6 (DFR), 7 (DFL)
         let c2 = (self.state >> 10) & 0b11111;
@@ -164,6 +174,7 @@ impl Cube2x2 {
         Ok(())
     }
 
+    /// Apply the F' move (counterclockwise front face turn).
     pub fn do_f_prime_move(&mut self) -> PyResult<()> {
         // F' affects corners: 2 (UFR), 3 (UFL), 6 (DFR), 7 (DFL)
         let c2 = (self.state >> 10) & 0b11111;
@@ -187,6 +198,7 @@ impl Cube2x2 {
         Ok(())
     }
 
+    /// Apply the B move (clockwise back face turn).
     pub fn do_b_move(&mut self) -> PyResult<()> {
         // B affects corners: 0 (UBL), 1 (UBR), 4 (DBL), 5 (DBR)
         let c0 = self.state & 0b11111;
@@ -210,6 +222,7 @@ impl Cube2x2 {
         Ok(())
     }
 
+    /// Apply the B' move (counterclockwise back face turn).
     pub fn do_b_prime_move(&mut self) -> PyResult<()> {
         // B' affects corners: 0 (UBL), 1 (UBR), 4 (DBL), 5 (DBR)
         let c0 = self.state & 0b11111;
@@ -233,6 +246,7 @@ impl Cube2x2 {
         Ok(())
     }
 
+    /// Return an ANSI-colored string rendering of the cube.
     fn __str__(&self) -> String {
         let u0 = self.get_sticker(0, 0);
         let u1 = self.get_sticker(1, 0);
@@ -271,10 +285,12 @@ impl Cube2x2 {
         )
     }
 
+    /// Return the 64-bit cube state as a binary string.
     pub fn to_binary(&self) -> String {
         format!("{:064b}", self.state)
     }
     
+    /// Apply a whitespace-separated sequence of cube moves.
     pub fn do_moves(&mut self, moves: String) -> PyResult<()> {
         for mv in moves.split_whitespace() {
             match mv {

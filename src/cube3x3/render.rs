@@ -62,6 +62,7 @@ impl Cube3x3 {
 
 #[pymethods]
 impl Cube3x3 {
+    /// Return an ANSI-colored string rendering of the cube.
     fn __str__(&self) -> String {
         let uc = Self::ansi_color('W');
         let lc = Self::ansi_color('O');

@@ -3,6 +3,7 @@ use pyo3::prelude::*;
 mod moves;
 mod render;
 
+/// A compact 2x2 Rubik's Cube model with fast move operations.
 #[pyclass]
 pub struct Cube2x2 {
     #[pyo3(get)]

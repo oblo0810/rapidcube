@@ -17,6 +17,16 @@ It is designed for fast state transitions, algorithm simulation, and experimenta
 
 ## Installation
 
+### From PyPI
+
+```bash
+# using pip
+pip install rapidcube
+
+# Using uv 
+uv add rapidcube
+```
+
 ### From Source (development)
 
 Requirements:
@@ -115,7 +125,7 @@ Benchmark tests are included under `benchmarks/` and compare selected operations
 Run benchmarks with:
 
 ```bash
-uv run pytest benchmarks/ -k benchmark --benchmark-sort=mean
+uv run pytest benchmarks/
 ```
 
 ## Testing
@@ -132,5 +142,4 @@ The project is currently in early development. The public API may evolve as test
 
 ## License
 
-Add a `LICENSE` file before publishing publicly on GitHub and PyPI.
-A common choice for Rust/Python libraries is MIT or Apache-2.0.
+This project is licensed under the Apache License, Version 2.0. See the `LICENSE` file for details.

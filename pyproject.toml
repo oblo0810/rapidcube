@@ -4,8 +4,8 @@ build-backend = "maturin"
 
 [project]
 name = "rapidcube"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.1.1"
+description = "A lightning-fast 2x2 and 3x3 Rubik's Cube simulator for Python, implemented in Rust."
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
@@ -18,6 +18,7 @@ classifiers = [
 dev = [
     "magiccube>=1.0.0",
     "maturin>=1.13.1",
+    "pdoc>=14.7.0",
     "pycuber>=0.2.2",
     "pytest>=8.3.5",
     "pytest-benchmark>=4.0.0",

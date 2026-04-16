@@ -5,6 +5,7 @@ use super::Cube3x3;
 #[pymethods]
 impl Cube3x3 {
     #[new]
+    /// Create a solved 3x3 cube state.
     pub fn new() -> Self {
         let mut corners: u64 = 0;
         for i in 0..8 {
@@ -75,6 +76,7 @@ impl Cube3x3 {
         self.edges = rest | rotated_u;
     }
 
+    /// Apply the U move (clockwise top face turn).
     pub fn do_u_move(&mut self) -> PyResult<()> {
         self.do_u_move_corners();
         self.do_u_move_edges();
@@ -97,6 +99,7 @@ impl Cube3x3 {
         self.edges = rest | rotated_u;
     }
 
+    /// Apply the U' move (counterclockwise top face turn).
     pub fn do_u_prime_move(&mut self) -> PyResult<()> {
         self.do_u_prime_move_corners();
         self.do_u_prime_move_edges();
@@ -119,6 +122,7 @@ impl Cube3x3 {
         self.edges = rest | rotated_d;
     }
 
+    /// Apply the D move (clockwise bottom face turn).
     pub fn do_d_move(&mut self) -> PyResult<()> {
         self.do_d_move_corners();
         self.do_d_move_edges();
@@ -141,6 +145,7 @@ impl Cube3x3 {
         self.edges = rest | rotated_d;
     }
 
+    /// Apply the D' move (counterclockwise bottom face turn).
     pub fn do_d_prime_move(&mut self) -> PyResult<()> {
         self.do_d_prime_move_corners();
         self.do_d_prime_move_edges();
@@ -168,6 +173,7 @@ impl Cube3x3 {
         self.corners |= new_c6 << 30;
     }
 
+    /// Apply the R move (clockwise right face turn).
     pub fn do_r_move(&mut self) -> PyResult<()> {
         self.do_r_move_corners();
         self.rotate_edges(5, 45, 25, 50, 0);
@@ -195,12 +201,12 @@ impl Cube3x3 {
         self.corners |= new_c6 << 30;
     }
 
+    /// Apply the R' move (counterclockwise right face turn).
     pub fn do_r_prime_move(&mut self) -> PyResult<()> {
         self.do_r_prime_move_corners();
         self.rotate_edges_prime(5, 45, 25, 50, 0);
         Ok(())
     }
-
 
     pub fn do_l_move_corners(&mut self){
         // L affects corners: 0 (UBL), 3 (UFL), 4 (DBL), 7 (DFL)
@@ -223,6 +229,7 @@ impl Cube3x3 {
         self.corners |= new_c7 << 35;
     }
 
+    /// Apply the L move (clockwise left face turn).
     pub fn do_l_move(&mut self) -> PyResult<()> {
         self.do_l_move_corners();
         self.rotate_edges(15, 55, 35, 40, 0);
@@ -250,6 +257,7 @@ impl Cube3x3 {
         self.corners |= new_c7 << 35;
     }
 
+    /// Apply the L' move (counterclockwise left face turn).
     pub fn do_l_prime_move(&mut self) -> PyResult<()> {
         self.do_l_prime_move_corners();
         self.rotate_edges_prime(15, 55, 35, 40, 0);
@@ -277,6 +285,7 @@ impl Cube3x3 {
         self.corners |= new_c7 << 35;
     }
 
+    /// Apply the F move (clockwise front face turn).
     pub fn do_f_move(&mut self) -> PyResult<()> {
         self.do_f_move_corners();
         self.rotate_edges(10, 50, 30, 55, 1);
@@ -304,6 +313,7 @@ impl Cube3x3 {
         self.corners |= new_c7 << 35;
     }
 
+    /// Apply the F' move (counterclockwise front face turn).
     pub fn do_f_prime_move(&mut self) -> PyResult<()> {
         self.do_f_prime_move_corners();
         self.rotate_edges_prime(10, 50, 30, 55, 1);
@@ -331,6 +341,7 @@ impl Cube3x3 {
         self.corners |= new_c5 << 25;
     }
 
+    /// Apply the B move (clockwise back face turn).
     pub fn do_b_move(&mut self) -> PyResult<()> {
         self.do_b_move_corners();
         self.rotate_edges(0, 40, 20, 45, 1);
@@ -358,16 +369,19 @@ impl Cube3x3 {
         self.corners |= new_c5 << 25;
     }
 
+    /// Apply the B' move (counterclockwise back face turn).
     pub fn do_b_prime_move(&mut self) -> PyResult<()> {
         self.do_b_prime_move_corners();
         self.rotate_edges_prime(0, 40, 20, 45, 1);
         Ok(())
     }
 
+    /// Return the corner state as a 64-bit binary string.
     pub fn to_binary(&self) -> String {
         format!("{:064b}", self.corners)
     }
     
+    /// Apply a whitespace-separated sequence of cube moves.
     pub fn do_moves(&mut self, moves: String) -> PyResult<()> {
         for mv in moves.split_whitespace() {
             match mv {
