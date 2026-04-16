@@ -41,11 +41,11 @@ def test_3x3():
     # print(cube)
     # cube.do_moves("R U R' U' R' F R2 U' R' U' R U R' F'")
     # print(cube)
-    # moves = "F' R F R2 B' D2 R2 L F' L2 D2 L2 D L2 F2 U R2 D L2 B2 D"
-    # for m in moves.split(" "):
-    #     print("Doing Move: " + m + "\n")
-    #     cube.do_moves(m)
-    #     print(cube)
+    moves = "F' R F R2 B' D2 R2 L F' L2 D2 L2 D L2 F2 U R2 D L2 B2 D"
+    for m in moves.split(" "):
+        print("Doing Move: " + m + "\n")
+        cube.do_moves(m)
+        print(cube)
     cube.do_moves("R")
     print(cube)
 
