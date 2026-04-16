@@ -23,11 +23,17 @@ Requirements:
 
 - Python 3.13 recommended (package metadata currently targets 3.8+)
 - Rust toolchain (stable)
-- maturin
+- [uv](https://docs.astral.sh/uv/) (recommended) or maturin
 
 ```bash
-git clone <your-repo-url>
-cd rapidcube/rapidcube
+git clone git@github.com:oblo0810/rapidcube.git
+cd rapidcube
+
+# Using uv (recommended)
+uv sync
+uv run maturin develop --release
+
+# Or using standard pip
 python -m pip install maturin
 maturin develop --release
 ```
@@ -109,7 +115,7 @@ Benchmark tests are included under `benchmarks/` and compare selected operations
 Run benchmarks with:
 
 ```bash
-pytest benchmarks -k benchmark --benchmark-sort=mean
+uv run pytest benchmarks/ -k benchmark --benchmark-sort=mean
 ```
 
 ## Testing
@@ -117,7 +123,7 @@ pytest benchmarks -k benchmark --benchmark-sort=mean
 Run unit tests with:
 
 ```bash
-pytest -q
+uv run pytest -q
 ```
 
 ## Project Status
