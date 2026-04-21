@@ -374,11 +374,6 @@ impl Cube3x3 {
         Ok(())
     }
 
-    /// Return the corner state as a 64-bit binary string.
-    pub fn to_binary(&self) -> PyResult<String> {
-        Ok(format!("{:064b}", self.corners))
-    }
-
     /// Apply a whitespace-separated sequence of cube moves.
     pub fn do_moves(&mut self, moves: String) -> PyResult<()> {
         for mv in moves.split_whitespace() {

@@ -2,6 +2,7 @@ use pyo3::prelude::*;
 
 mod moves;
 mod render;
+mod utils;
 
 #[pyclass]
 pub struct Cube3x3 {
