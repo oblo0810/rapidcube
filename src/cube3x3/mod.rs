@@ -1,6 +1,7 @@
 use pyo3::prelude::*;
 
 mod moves;
+mod pymethods;
 mod render;
 mod utils;
 

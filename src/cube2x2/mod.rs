@@ -1,7 +1,9 @@
 use pyo3::prelude::*;
 
 mod moves;
+mod pymethods;
 mod render;
+mod utils;
 
 /// A compact 2x2 Rubik's Cube model with fast move operations.
 #[pyclass]

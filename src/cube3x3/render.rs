@@ -1,5 +1,3 @@
-use pyo3::prelude::*;
-
 use super::Cube3x3;
 
 impl Cube3x3 {
@@ -60,10 +58,9 @@ impl Cube3x3 {
     }
 }
 
-#[pymethods]
 impl Cube3x3 {
     /// Return an ANSI-colored string rendering of the cube.
-    fn __str__(&self) -> String {
+    pub(crate) fn render_ansi_string(&self) -> String {
         let uc = Self::ansi_color('W');
         let lc = Self::ansi_color('O');
         let fc = Self::ansi_color('G');

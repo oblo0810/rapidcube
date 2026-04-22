@@ -14,6 +14,9 @@ MOVE_PAIRS = [
     ("do_b_move", "do_b_prime_move"),
 ]
 
+INVERSE_OF = {move: inv for move, inv in MOVE_PAIRS}
+INVERSE_OF.update({inv: move for move, inv in MOVE_PAIRS})
+
 
 def _identity_state() -> int:
     state = 0
@@ -33,6 +36,31 @@ class TestCube2x2(unittest.TestCase):
         self.assertEqual(len(bits), 64)
         self.assertTrue(set(bits).issubset({"0", "1"}))
         self.assertEqual(int(bits, 2), cube.state)
+
+    def test_get_corners_returns_two_dimensional_integer_array(self):
+        cube = Cube2x2()
+
+        corners = cube.get_corners()
+
+        self.assertIsInstance(corners, list)
+        self.assertEqual(len(corners), 8)
+        self.assertEqual(corners, [(i, 0) for i in range(8)])
+
+        for row in corners:
+            self.assertIsInstance(row, tuple)
+            self.assertEqual(len(row), 2)
+            self.assertTrue(all(isinstance(value, int) for value in row))
+
+    def test_is_solved_tracks_state_changes(self):
+        cube = Cube2x2()
+
+        self.assertTrue(cube.is_solved())
+
+        cube.do_f_move()
+        self.assertFalse(cube.is_solved())
+
+        cube.do_f_prime_move()
+        self.assertTrue(cube.is_solved())
 
     def test_move_followed_by_inverse_restores_state(self):
         for move, inv in MOVE_PAIRS:
@@ -69,28 +97,29 @@ class TestCube2x2(unittest.TestCase):
             "do_b_prime_move",
         ]
 
-        inverse_of = {
-            "do_u_move": "do_u_prime_move",
-            "do_u_prime_move": "do_u_move",
-            "do_d_move": "do_d_prime_move",
-            "do_d_prime_move": "do_d_move",
-            "do_r_move": "do_r_prime_move",
-            "do_r_prime_move": "do_r_move",
-            "do_l_move": "do_l_prime_move",
-            "do_l_prime_move": "do_l_move",
-            "do_f_move": "do_f_prime_move",
-            "do_f_prime_move": "do_f_move",
-            "do_b_move": "do_b_prime_move",
-            "do_b_prime_move": "do_b_move",
-        }
-
         for step in sequence:
             getattr(cube, step)()
 
         for step in reversed(sequence):
-            getattr(cube, inverse_of[step])()
+            getattr(cube, INVERSE_OF[step])()
 
         self.assertEqual(cube.state, before)
+
+    def test_do_moves_matches_explicit_execution_and_ignores_unknown_tokens(self):
+        parsed = Cube2x2()
+        explicit = Cube2x2()
+
+        parsed.do_moves("U R2 F! INVALID_TOKEN B' D2")
+
+        explicit.do_u_move()
+        explicit.do_r_move()
+        explicit.do_r_move()
+        explicit.do_f_prime_move()
+        explicit.do_b_prime_move()
+        explicit.do_d_move()
+        explicit.do_d_move()
+
+        self.assertEqual(parsed.state, explicit.state)
 
     def test_str_returns_multiline_colored_net(self):
         cube = Cube2x2()
