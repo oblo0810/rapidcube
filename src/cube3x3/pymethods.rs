@@ -40,6 +40,12 @@ impl Cube3x3 {
         Ok(self.edges_state())
     }
 
+    /// Return the cube state as an array of 54 sticker colors.
+    /// The stickers are ordered as follows: U face (9 stickers), R face (9 stickers), D face (9 stickers), L face (9 stickers), L face (9 stickers), B face (9 stickers).
+    pub fn to_sticker_array(&self) -> PyResult<[usize; 54]> {
+        Ok(self.to_sticker_array_internal())
+    }
+
     /// Return true if the cube is solved.
     pub fn is_solved(&self) -> PyResult<bool> {
         Ok(self.is_solved_internal())

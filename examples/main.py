@@ -50,6 +50,13 @@ def test_3x3():
     print(cube)
 
 
+def demo_array():
+    cube = Cube3x3()
+    print(cube.to_sticker_array())
+    cube.do_moves("R")
+    print(cube.to_sticker_array())
+
+
 # def encode_state():
 #     cube = Cube2x2()
 #     str_state = "00" + "{0:b}".format(cube.state)
@@ -67,4 +74,4 @@ def test_3x3():
 
 if __name__ == "__main__":
     # _ = encode_state()
-    test_3x3()
+    demo_array()
