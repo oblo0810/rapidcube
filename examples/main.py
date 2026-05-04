@@ -1,4 +1,4 @@
-from rapidcube import Cube2x2, Cube3x3
+from rapidcube import Cube2x2, Cube3x3, inverse_scramble
 # import torch
 
 
@@ -54,6 +54,7 @@ def demo_array():
     cube = Cube3x3()
     print(cube.to_sticker_array())
     cube.do_moves("R")
+    print(inverse_scramble("R"))
     print(cube.to_sticker_array())
 
 
