@@ -4,6 +4,7 @@ mod moves;
 mod pymethods;
 mod render;
 mod utils;
+mod solver;
 
 #[pyclass]
 pub struct Cube3x3 {
