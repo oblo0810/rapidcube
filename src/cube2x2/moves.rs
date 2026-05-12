@@ -200,43 +200,4 @@ impl Cube2x2 {
         self.state |= new_c4 << 20;
         self.state |= new_c5 << 25;
     }
-
-    pub(super) fn render_ansi(&self) -> String {
-        let u0 = self.get_sticker(0, 0);
-        let u1 = self.get_sticker(1, 0);
-        let u2 = self.get_sticker(3, 0);
-        let u3 = self.get_sticker(2, 0);
-
-        let l0 = self.get_sticker(0, 2);
-        let l1 = self.get_sticker(3, 1);
-        let l2 = self.get_sticker(4, 1);
-        let l3 = self.get_sticker(7, 2);
-
-        let f0 = self.get_sticker(3, 2);
-        let f1 = self.get_sticker(2, 1);
-        let f2 = self.get_sticker(7, 1);
-        let f3 = self.get_sticker(6, 2);
-
-        let r0 = self.get_sticker(2, 2);
-        let r1 = self.get_sticker(1, 1);
-        let r2 = self.get_sticker(6, 1);
-        let r3 = self.get_sticker(5, 2);
-
-        let b0 = self.get_sticker(1, 2);
-        let b1 = self.get_sticker(0, 1);
-        let b2 = self.get_sticker(5, 1);
-        let b3 = self.get_sticker(4, 2);
-
-        let d0 = self.get_sticker(7, 0);
-        let d1 = self.get_sticker(6, 0);
-        let d2 = self.get_sticker(4, 0);
-        let d3 = self.get_sticker(5, 0);
-
-        format!(
-            "      {} {}\n      {} {}\n{} {}   {} {}   {} {}   {} {}\n{} {}   {} {}   {} {}   {} {}\n      {} {}\n      {} {}\n",
-            u0, u1, u2, u3, l0, l1, f0, f1, r0, r1, b0, b1, l2, l3, f2, f3, r2, r3, b2, b3,
-            d0, d1, d2, d3
-        )
-    }
 }
-

@@ -20,6 +20,10 @@ impl Cube2x2 {
         Ok(self.corners_state())
     }
 
+    pub fn to_sticker_array(&self) -> PyResult<[usize; 24]> {
+        Ok(self.to_sticker_array_internal())
+    }
+
     /// Return true if the cube is solved.
     pub fn is_solved(&self) -> PyResult<bool> {
         Ok(self.is_solved_internal())

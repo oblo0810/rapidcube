@@ -24,7 +24,7 @@ def test_3x3():
 
 
 def demo_array():
-    cube = Cube3x3()
+    cube = Cube2x2()
     print(cube.to_sticker_array())
     print(cube)
     cube.do_moves("R")
