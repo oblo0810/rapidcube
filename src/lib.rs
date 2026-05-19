@@ -6,10 +6,13 @@ use pyo3::types::PyList;
 mod cube;
 mod cube2x2;
 mod cube3x3;
+#[allow(non_snake_case)]
+mod cubeBatch;
 
-use crate::cube::{next_states_internal, Cube};
+use crate::cube::next_states_internal;
 use cube2x2::Cube2x2;
 use cube3x3::Cube3x3;
+use cubeBatch::CubeBatch;
 
 /// Return the inverse of the given scramble string.
 #[pyfunction]
@@ -85,6 +88,7 @@ fn get_next_states(py: Python<'_>, cubes: &Bound<'_, PyList>) -> PyResult<Py<PyA
 
 #[pymodule]
 fn rapidcube(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_class::<CubeBatch>()?;
     m.add_class::<Cube2x2>()?;
     m.add_class::<Cube3x3>()?;
     m.add_function(wrap_pyfunction!(inverse_scramble, m)?)?;

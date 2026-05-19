@@ -3,6 +3,7 @@ import unittest
 import rapidcube
 
 Cube2x2 = rapidcube.Cube2x2
+CubeBatch = rapidcube.cubeBatch
 
 
 MOVE_PAIRS = [
@@ -128,6 +129,39 @@ class TestCube2x2(unittest.TestCase):
 
         self.assertEqual(states.shape, (len(cubes) * 12, 24))
         self.assertTrue(hasattr(states, "dtype"))
+
+    def test_cube_batch_stores_mixed_cube_objects(self):
+        batch = CubeBatch([Cube2x2(), rapidcube.Cube3x3()])
+
+        self.assertEqual(batch.len(), 2)
+        self.assertEqual(len(batch), 2)
+        self.assertFalse(batch.is_empty())
+        self.assertEqual(len(batch.cubes), 2)
+        self.assertIsInstance(batch.cubes[0], Cube2x2)
+        self.assertIsInstance(batch.cubes[1], rapidcube.Cube3x3)
+
+    def test_cube_batch_supports_indexing(self):
+        first = Cube2x2()
+        second = rapidcube.Cube3x3()
+        batch = CubeBatch([first, second])
+
+        self.assertIs(batch[0], first)
+        self.assertIs(batch[1], second)
+        self.assertIs(batch[-1], second)
+
+        with self.assertRaises(IndexError):
+            _ = batch[2]
+
+    def test_cube_batch_from_count_constructor(self):
+        b2 = CubeBatch.from_count(3, "2x2")
+        self.assertEqual(len(b2), 3)
+        for i in range(3):
+            self.assertIsInstance(b2[i], Cube2x2)
+
+        b3 = CubeBatch.from_count(2, "3x3")
+        self.assertEqual(len(b3), 2)
+        for i in range(2):
+            self.assertIsInstance(b3[i], rapidcube.Cube3x3)
 
     def test_str_returns_multiline_colored_net(self):
         cube = Cube2x2()
