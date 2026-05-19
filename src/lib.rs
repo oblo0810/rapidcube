@@ -1,12 +1,13 @@
-use ndarray::Array2;
 use numpy::{IntoPyArray, PyArray2};
-use pyo3::prelude::*;
 use pyo3::exceptions::PyTypeError;
+use pyo3::prelude::*;
 use pyo3::types::PyList;
 
+mod cube;
 mod cube2x2;
 mod cube3x3;
 
+use crate::cube::{next_states_internal, Cube};
 use cube2x2::Cube2x2;
 use cube3x3::Cube3x3;
 
@@ -60,7 +61,7 @@ fn get_next_states(py: Python<'_>, cubes: &Bound<'_, PyList>) -> PyResult<Py<PyA
             })
             .collect::<PyResult<Vec<_>>>()?;
 
-        let states: Array2<i64> = cube2x2::next_states_internal(&cubes);
+        let states = next_states_internal(&cubes);
         return Ok(states.into_pyarray(py).unbind());
     }
 
@@ -73,7 +74,7 @@ fn get_next_states(py: Python<'_>, cubes: &Bound<'_, PyList>) -> PyResult<Py<PyA
             })
             .collect::<PyResult<Vec<_>>>()?;
 
-        let states: Array2<i64> = cube3x3::next_states_internal(&cubes);
+        let states = next_states_internal(&cubes);
         return Ok(states.into_pyarray(py).unbind());
     }
 

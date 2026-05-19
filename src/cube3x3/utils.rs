@@ -1,5 +1,4 @@
-use ndarray::Array2;
-
+use crate::cube::Cube;
 use super::Cube3x3;
 
 impl Cube3x3 {
@@ -164,28 +163,96 @@ impl Cube3x3 {
     }
 }
 
-pub(crate) fn next_states_internal(cubes: &[Cube3x3]) -> Array2<i64> {
-    const NUM_MOVES: usize = 12;
-    const STATE_DIM: usize = 54;
+impl Cube for Cube3x3 {
+    const STICKER_DIM: usize = 54;
 
-    let mut array = Array2::<i64>::zeros((cubes.len() * NUM_MOVES, STATE_DIM));
+    fn corners_state_internal(&self) -> Vec<(u8, u8)> {
+        Cube3x3::corners_state(self)
+    }
 
-    for (cube_index, cube) in cubes.iter().enumerate() {
-        for move_index in 0..NUM_MOVES {
-            let mut next_cube = Cube3x3 {
-                corners: cube.corners,
-                edges: cube.edges,
-            };
-            next_cube.apply_move_index_internal(move_index);
+    fn is_solved_internal(&self) -> bool {
+        Cube3x3::is_solved_internal(self)
+    }
 
-            let sticker_array = next_cube.to_sticker_array_internal();
-            let row_index = cube_index * NUM_MOVES + move_index;
+    fn render_ansi_internal(&self) -> String {
+        Cube3x3::render_ansi_string(self)
+    }
 
-            for (sticker_index, sticker_value) in sticker_array.iter().enumerate() {
-                array[[row_index, sticker_index]] = *sticker_value as i64;
-            }
+    fn state_copy_internal(&self) -> Self {
+        Cube3x3 {
+            corners: self.corners,
+            edges: self.edges,
         }
     }
 
-    array
+    fn sticker_array_internal(&self) -> Vec<i64> {
+        self.to_sticker_array_internal()
+            .into_iter()
+            .map(|value| value as i64)
+            .collect()
+    }
+
+    fn apply_move_index_internal(&mut self, move_index: usize) {
+        Cube3x3::apply_move_index_internal(self, move_index);
+    }
+
+    fn do_u_move_internal(&mut self) {
+        self.do_u_move_corners();
+        self.do_u_move_edges();
+    }
+
+    fn do_u_prime_move_internal(&mut self) {
+        self.do_u_prime_move_corners();
+        self.do_u_prime_move_edges();
+    }
+
+    fn do_d_move_internal(&mut self) {
+        self.do_d_move_corners();
+        self.do_d_move_edges();
+    }
+
+    fn do_d_prime_move_internal(&mut self) {
+        self.do_d_prime_move_corners();
+        self.do_d_prime_move_edges();
+    }
+
+    fn do_r_move_internal(&mut self) {
+        self.do_r_move_corners();
+        self.rotate_edges(5, 45, 25, 50, 0);
+    }
+
+    fn do_r_prime_move_internal(&mut self) {
+        self.do_r_prime_move_corners();
+        self.rotate_edges_prime(5, 45, 25, 50, 0);
+    }
+
+    fn do_l_move_internal(&mut self) {
+        self.do_l_move_corners();
+        self.rotate_edges(15, 55, 35, 40, 0);
+    }
+
+    fn do_l_prime_move_internal(&mut self) {
+        self.do_l_prime_move_corners();
+        self.rotate_edges_prime(15, 55, 35, 40, 0);
+    }
+
+    fn do_f_move_internal(&mut self) {
+        self.do_f_move_corners();
+        self.rotate_edges(10, 50, 30, 55, 1);
+    }
+
+    fn do_f_prime_move_internal(&mut self) {
+        self.do_f_prime_move_corners();
+        self.rotate_edges_prime(10, 50, 30, 55, 1);
+    }
+
+    fn do_b_move_internal(&mut self) {
+        self.do_b_move_corners();
+        self.rotate_edges(0, 40, 20, 45, 1);
+    }
+
+    fn do_b_prime_move_internal(&mut self) {
+        self.do_b_prime_move_corners();
+        self.rotate_edges_prime(0, 40, 20, 45, 1);
+    }
 }

@@ -5,8 +5,6 @@ mod pymethods;
 mod render;
 mod utils;
 
-pub(crate) use utils::next_states_internal;
-
 #[pyclass]
 pub struct Cube3x3 {
     #[pyo3(get)]

@@ -1,5 +1,4 @@
-use ndarray::Array2;
-
+use crate::cube::Cube;
 use super::Cube2x2;
 
 impl Cube2x2 {
@@ -80,25 +79,81 @@ impl Cube2x2 {
     }
 }
 
-pub(crate) fn next_states_internal(cubes: &[Cube2x2]) -> Array2<i64> {
-    const NUM_MOVES: usize = 12;
-    const STATE_DIM: usize = 24;
+impl Cube for Cube2x2 {
+    const STICKER_DIM: usize = 24;
 
-    let mut array = Array2::<i64>::zeros((cubes.len() * NUM_MOVES, STATE_DIM));
-
-    for (cube_index, cube) in cubes.iter().enumerate() {
-        for move_index in 0..NUM_MOVES {
-            let mut next_cube = Cube2x2 { state: cube.state };
-            next_cube.apply_move_index_internal(move_index);
-
-            let sticker_array = next_cube.to_sticker_array_internal();
-            let row_index = cube_index * NUM_MOVES + move_index;
-
-            for (sticker_index, sticker_value) in sticker_array.iter().enumerate() {
-                array[[row_index, sticker_index]] = *sticker_value as i64;
-            }
-        }
+    fn corners_state_internal(&self) -> Vec<(u8, u8)> {
+        Cube2x2::corners_state(self)
     }
 
-    array
+    fn is_solved_internal(&self) -> bool {
+        Cube2x2::is_solved_internal(self)
+    }
+
+    fn render_ansi_internal(&self) -> String {
+        Cube2x2::render_ansi(self)
+    }
+
+    fn state_copy_internal(&self) -> Self {
+        Cube2x2 { state: self.state }
+    }
+
+    fn sticker_array_internal(&self) -> Vec<i64> {
+        self.to_sticker_array_internal()
+            .into_iter()
+            .map(|value| value as i64)
+            .collect()
+    }
+
+    fn apply_move_index_internal(&mut self, move_index: usize) {
+        Cube2x2::apply_move_index_internal(self, move_index);
+    }
+
+    fn do_u_move_internal(&mut self) {
+        Cube2x2::do_u_move_internal(self);
+    }
+
+    fn do_u_prime_move_internal(&mut self) {
+        Cube2x2::do_u_prime_move_internal(self);
+    }
+
+    fn do_d_move_internal(&mut self) {
+        Cube2x2::do_d_move_internal(self);
+    }
+
+    fn do_d_prime_move_internal(&mut self) {
+        Cube2x2::do_d_prime_move_internal(self);
+    }
+
+    fn do_r_move_internal(&mut self) {
+        Cube2x2::do_r_move_internal(self);
+    }
+
+    fn do_r_prime_move_internal(&mut self) {
+        Cube2x2::do_r_prime_move_internal(self);
+    }
+
+    fn do_l_move_internal(&mut self) {
+        Cube2x2::do_l_move_internal(self);
+    }
+
+    fn do_l_prime_move_internal(&mut self) {
+        Cube2x2::do_l_prime_move_internal(self);
+    }
+
+    fn do_f_move_internal(&mut self) {
+        Cube2x2::do_f_move_internal(self);
+    }
+
+    fn do_f_prime_move_internal(&mut self) {
+        Cube2x2::do_f_prime_move_internal(self);
+    }
+
+    fn do_b_move_internal(&mut self) {
+        Cube2x2::do_b_move_internal(self);
+    }
+
+    fn do_b_prime_move_internal(&mut self) {
+        Cube2x2::do_b_prime_move_internal(self);
+    }
 }

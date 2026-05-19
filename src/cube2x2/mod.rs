@@ -5,8 +5,6 @@ mod pymethods;
 mod render;
 mod utils;
 
-pub(crate) use utils::next_states_internal;
-
 /// A compact 2x2 Rubik's Cube model with fast move operations.
 #[pyclass]
 pub struct Cube2x2 {
