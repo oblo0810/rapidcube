@@ -1,4 +1,4 @@
-from rapidcube import Cube2x2, Cube3x3, inverse_scramble
+from rapidcube import Cube2x2, Cube3x3, inverse_scramble, get_next_states
 # import torch
 
 
@@ -31,6 +31,9 @@ def demo_array():
     print(inverse_scramble("R"))
     print(cube.to_sticker_array())
     print(cube)
+    
+    cubes = [Cube2x2(), Cube2x2()]
+    print(get_next_states(cubes))
 
 
 # def encode_state():

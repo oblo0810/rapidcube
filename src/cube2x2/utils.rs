@@ -1,3 +1,5 @@
+use ndarray::Array2;
+
 use super::Cube2x2;
 
 impl Cube2x2 {
@@ -76,4 +78,27 @@ impl Cube2x2 {
             self.get_corner_sticker_idx(4, 2),
         ]
     }
+}
+
+pub(crate) fn next_states_internal(cubes: &[Cube2x2]) -> Array2<usize> {
+    const NUM_MOVES: usize = 12;
+    const STATE_DIM: usize = 24;
+
+    let mut array = Array2::<usize>::zeros((cubes.len() * NUM_MOVES, STATE_DIM));
+
+    for (cube_index, cube) in cubes.iter().enumerate() {
+        for move_index in 0..NUM_MOVES {
+            let mut next_cube = Cube2x2 { state: cube.state };
+            next_cube.apply_move_index_internal(move_index);
+
+            let sticker_array = next_cube.to_sticker_array_internal();
+            let row_index = cube_index * NUM_MOVES + move_index;
+
+            for (sticker_index, sticker_value) in sticker_array.iter().enumerate() {
+                array[[row_index, sticker_index]] = *sticker_value;
+            }
+        }
+    }
+
+    array
 }

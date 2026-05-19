@@ -200,4 +200,22 @@ impl Cube2x2 {
         self.state |= new_c4 << 20;
         self.state |= new_c5 << 25;
     }
+
+    pub(crate) fn apply_move_index_internal(&mut self, move_index: usize) {
+        match move_index {
+            0 => self.do_u_move_internal(),
+            1 => self.do_u_prime_move_internal(),
+            2 => self.do_d_move_internal(),
+            3 => self.do_d_prime_move_internal(),
+            4 => self.do_r_move_internal(),
+            5 => self.do_r_prime_move_internal(),
+            6 => self.do_l_move_internal(),
+            7 => self.do_l_prime_move_internal(),
+            8 => self.do_f_move_internal(),
+            9 => self.do_f_prime_move_internal(),
+            10 => self.do_b_move_internal(),
+            11 => self.do_b_prime_move_internal(),
+            _ => {}
+        }
+    }
 }

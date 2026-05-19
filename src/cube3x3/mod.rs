@@ -5,6 +5,8 @@ mod pymethods;
 mod render;
 mod utils;
 
+pub(crate) use utils::next_states_internal;
+
 #[pyclass]
 pub struct Cube3x3 {
     #[pyo3(get)]
@@ -38,5 +40,12 @@ impl Cube3x3 {
         let ori = edge >> 4;
         let new_ori = (ori + amount) % 2;
         pos | (new_ori << 4)
+    }
+
+    pub(crate) fn state_copy_internal(&self) -> Self {
+        Self {
+            corners: self.corners,
+            edges: self.edges,
+        }
     }
 }

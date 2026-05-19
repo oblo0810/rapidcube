@@ -129,6 +129,14 @@ class TestCube3x3(unittest.TestCase):
 
         self.assertEqual(parsed.to_binary(), explicit.to_binary())
 
+    def test_get_next_states_returns_qtm_successors(self):
+        cubes = [Cube3x3(), Cube3x3()]
+
+        states = rapidcube.get_next_states(cubes)
+
+        self.assertEqual(states.shape, (len(cubes) * 12, 54))
+        self.assertTrue(hasattr(states, "dtype"))
+
     def test_str_returns_multiline_colored_net(self):
         cube = Cube3x3()
         text = str(cube)

@@ -98,6 +98,7 @@ Note: unknown tokens are ignored by `do_moves`.
 
 - `Cube2x2()`
 - `state: int` (read-only)
+- `get_next_states(cubes: list[Cube2x2] | list[Cube3x3]) -> numpy.ndarray` returning a `(len(cubes) * 12, 24)` or `(len(cubes) * 12, 54)` sticker matrix
 - Single-move methods:
 	- `do_u_move`, `do_u_prime_move`
 	- `do_d_move`, `do_d_prime_move`
