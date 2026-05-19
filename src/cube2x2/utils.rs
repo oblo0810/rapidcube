@@ -80,11 +80,11 @@ impl Cube2x2 {
     }
 }
 
-pub(crate) fn next_states_internal(cubes: &[Cube2x2]) -> Array2<usize> {
+pub(crate) fn next_states_internal(cubes: &[Cube2x2]) -> Array2<i64> {
     const NUM_MOVES: usize = 12;
     const STATE_DIM: usize = 24;
 
-    let mut array = Array2::<usize>::zeros((cubes.len() * NUM_MOVES, STATE_DIM));
+    let mut array = Array2::<i64>::zeros((cubes.len() * NUM_MOVES, STATE_DIM));
 
     for (cube_index, cube) in cubes.iter().enumerate() {
         for move_index in 0..NUM_MOVES {
@@ -95,7 +95,7 @@ pub(crate) fn next_states_internal(cubes: &[Cube2x2]) -> Array2<usize> {
             let row_index = cube_index * NUM_MOVES + move_index;
 
             for (sticker_index, sticker_value) in sticker_array.iter().enumerate() {
-                array[[row_index, sticker_index]] = *sticker_value;
+                array[[row_index, sticker_index]] = *sticker_value as i64;
             }
         }
     }

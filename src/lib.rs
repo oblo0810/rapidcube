@@ -45,7 +45,7 @@ fn inverse_scramble(scramble: &str) -> String {
 
 /// Return quarter-turn successors for a batch of 2x2 or 3x3 cubes.
 #[pyfunction]
-fn get_next_states(py: Python<'_>, cubes: &Bound<'_, PyList>) -> PyResult<Py<PyArray2<usize>>> {
+fn get_next_states(py: Python<'_>, cubes: &Bound<'_, PyList>) -> PyResult<Py<PyArray2<i64>>> {
     let first = cubes
         .iter()
         .next()
@@ -60,7 +60,7 @@ fn get_next_states(py: Python<'_>, cubes: &Bound<'_, PyList>) -> PyResult<Py<PyA
             })
             .collect::<PyResult<Vec<_>>>()?;
 
-        let states: Array2<usize> = cube2x2::next_states_internal(&cubes);
+        let states: Array2<i64> = cube2x2::next_states_internal(&cubes);
         return Ok(states.into_pyarray(py).unbind());
     }
 
@@ -73,7 +73,7 @@ fn get_next_states(py: Python<'_>, cubes: &Bound<'_, PyList>) -> PyResult<Py<PyA
             })
             .collect::<PyResult<Vec<_>>>()?;
 
-        let states: Array2<usize> = cube3x3::next_states_internal(&cubes);
+        let states: Array2<i64> = cube3x3::next_states_internal(&cubes);
         return Ok(states.into_pyarray(py).unbind());
     }
 
