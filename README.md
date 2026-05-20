@@ -119,6 +119,14 @@ Note: unknown tokens are ignored by `do_moves`.
 - `to_binary() -> str` (corner-state binary encoding)
 - `str(cube)` returns an ANSI-colored net
 
+### CubeBatch
+
+- `CubeBatch(cubes: list[Cube2x2] | list[Cube3x3])`
+- Stores cubes in Rust-owned native storage, not Python objects
+- `len(batch)` / `batch[i]` work as a sequence; indexed access materializes only the requested cube
+- `CubeBatch.from_count(count, cube_type)` creates a typed batch of solved cubes
+- `batch.cube_type()` returns `Cube2x2` or `Cube3x3`
+
 ## Benchmarks
 
 Benchmark tests are included under `benchmarks/` and compare selected operations against other Python cube libraries.

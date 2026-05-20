@@ -1,7 +1,7 @@
 use super::Cube3x3;
 
 impl Cube3x3 {
-    pub(super) fn new_solved() -> Self {
+    pub(crate) fn new_solved() -> Self {
         let mut corners: u64 = 0;
         for i in 0..8 {
             corners |= (i as u64) << (i * 5);

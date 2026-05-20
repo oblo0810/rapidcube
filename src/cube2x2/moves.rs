@@ -1,7 +1,7 @@
 use super::Cube2x2;
 
 impl Cube2x2 {
-    pub(super) fn new_solved() -> Self {
+    pub(crate) fn new_solved() -> Self {
         let mut state: u64 = 0;
         for i in 0..8 {
             state |= (i as u64) << (i * 5);

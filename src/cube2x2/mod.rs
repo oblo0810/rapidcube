@@ -6,7 +6,8 @@ mod render;
 mod utils;
 
 /// A compact 2x2 Rubik's Cube model with fast move operations.
-#[pyclass]
+#[pyclass(skip_from_py_object)]
+#[derive(Clone, Copy)]
 pub struct Cube2x2 {
     #[pyo3(get)]
     pub state: u64,

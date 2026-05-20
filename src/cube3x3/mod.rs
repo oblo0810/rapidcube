@@ -5,7 +5,8 @@ mod pymethods;
 mod render;
 mod utils;
 
-#[pyclass]
+#[pyclass(skip_from_py_object)]
+#[derive(Clone, Copy)]
 pub struct Cube3x3 {
     #[pyo3(get)]
     pub corners: u64,
