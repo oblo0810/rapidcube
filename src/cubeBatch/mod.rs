@@ -1,6 +1,8 @@
+use ndarray::Array2;
 use pyo3::exceptions::PyTypeError;
 use pyo3::prelude::*;
 
+use crate::cube;
 use crate::cube2x2::Cube2x2;
 use crate::cube3x3::Cube3x3;
 
@@ -54,6 +56,13 @@ impl CubeBatch {
 
     pub(crate) fn item_at_internal(&self, py: Python<'_>, index: usize) -> PyResult<Py<PyAny>> {
         self.cubes.get_py_internal(py, index)
+    }
+
+    pub(crate) fn next_states_internal(&self) -> PyResult<Array2<i64>> {
+        match &self.cubes {
+            CubeBatchStorage::Cube2x2(cubes) => Ok(crate::cube::next_states_internal(cubes)),
+            CubeBatchStorage::Cube3x3(cubes) => Ok(crate::cube::next_states_internal(cubes)),
+        }
     }
 }
 
