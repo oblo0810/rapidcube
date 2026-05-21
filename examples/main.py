@@ -1,5 +1,5 @@
-from rapidcube import Cube2x2, Cube3x3, inverse_scramble, get_next_states
-# import torch
+from rapidcube import Cube2x2, Cube3x3, CubeBatch, inverse_scramble, get_next_states
+import torch
 
 
 def main():
@@ -31,7 +31,7 @@ def demo_array():
     print(inverse_scramble("R"))
     print(cube.to_sticker_array())
     print(cube)
-    
+
     cubes = [Cube2x2(), Cube2x2()]
     print(get_next_states(cubes))
 
@@ -51,6 +51,11 @@ def demo_array():
 #     return tensor
 
 
+def demo_cubeBatch():
+    batch = CubeBatch(3, 2)
+    print(torch.tensor(batch.get_next_states()))
+
+
 if __name__ == "__main__":
     # _ = encode_state()
-    demo_array()
+    demo_cubeBatch()

@@ -13,6 +13,9 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
+dependencies = [
+    "torch>=2.5.1",
+]
 
 [dependency-groups]
 dev = [
