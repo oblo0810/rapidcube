@@ -784,7 +784,7 @@ wheels = [
 
 [[package]]
 name = "rapidcube"
-version = "0.1.9"
+version = "0.1.12"
 source = { editable = "." }
 
 [package.dev-dependencies]

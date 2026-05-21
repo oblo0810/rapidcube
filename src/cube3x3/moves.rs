@@ -339,5 +339,59 @@ impl Cube3x3 {
             _ => {}
         }
     }
+
+    pub(crate) fn undo_move_index_internal(&mut self, move_index: usize) {
+        match move_index {
+            0 => {
+                self.do_u_prime_move_corners();
+                self.do_u_prime_move_edges();
+            }
+            1 => {
+                self.do_u_move_corners();
+                self.do_u_move_edges();
+            }
+            2 => {
+                self.do_d_prime_move_corners();
+                self.do_d_prime_move_edges();
+            }
+            3 => {
+                self.do_d_move_corners();
+                self.do_d_move_edges();
+            }
+            4 => {
+                self.do_r_prime_move_corners();
+                self.rotate_edges_prime(5, 45, 25, 50, 0);
+            }
+            5 => {
+                self.do_r_move_corners();
+                self.rotate_edges(5, 45, 25, 50, 0);
+            }
+            6 => {
+                self.do_l_prime_move_corners();
+                self.rotate_edges_prime(15, 55, 35, 40, 0);
+            }
+            7 => {
+                self.do_l_move_corners();
+                self.rotate_edges(15, 55, 35, 40, 0);
+            }
+            8 => {
+                self.do_f_prime_move_corners();
+                self.rotate_edges_prime(10, 50, 30, 55, 1);
+            }
+            9 => {
+                self.do_f_move_corners();
+                self.rotate_edges(10, 50, 30, 55, 1);
+            }
+            10 => {
+                self.do_b_prime_move_corners();
+                self.rotate_edges_prime(0, 40, 20, 45, 1);
+            }
+            11 => {
+                self.do_b_move_corners();
+                self.rotate_edges(0, 40, 20, 45, 1);
+            }
+            _ => {}
+        }
+    }
 }
 

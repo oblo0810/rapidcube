@@ -1,4 +1,5 @@
 use ndarray::Array2;
+use rayon::prelude::*;
 
 pub(crate) trait Cube: Sized {
     const STICKER_DIM: usize;
@@ -10,6 +11,7 @@ pub(crate) trait Cube: Sized {
     fn sticker_array_internal(&self) -> Vec<i64>;
 
     fn apply_move_index_internal(&mut self, move_index: usize);
+    fn undo_move_index_internal(&mut self, move_index: usize);
     fn do_u_move_internal(&mut self);
     fn do_u_prime_move_internal(&mut self);
     fn do_d_move_internal(&mut self);
@@ -68,24 +70,29 @@ pub(crate) trait Cube: Sized {
     }
 }
 
-pub(crate) fn next_states_internal<C: Cube>(cubes: &[C]) -> Array2<i64> {
+pub(crate) fn next_states_internal<C: Cube + Sync>(cubes: &[C]) -> Array2<i64> {
     const NUM_MOVES: usize = 12;
 
-    let mut array = Array2::<i64>::zeros((cubes.len() * NUM_MOVES, C::STICKER_DIM));
+    let rows = cubes.len() * NUM_MOVES;
+    let mut array = Array2::<i64>::zeros((rows, C::STICKER_DIM));
 
-    for (cube_index, cube) in cubes.iter().enumerate() {
-        for move_index in 0..NUM_MOVES {
-            let mut next_cube = cube.state_copy_internal();
+    array
+        .as_slice_mut()
+        .expect("Array2 must be contiguous")
+        .par_chunks_mut(C::STICKER_DIM)
+        .enumerate()
+        .for_each(|(row_index, row)| {
+            let cube_index = row_index / NUM_MOVES;
+            let move_index = row_index % NUM_MOVES;
+
+            let mut next_cube = cubes[cube_index].state_copy_internal();
             next_cube.apply_move_index_internal(move_index);
 
             let sticker_array = next_cube.sticker_array_internal();
-            let row_index = cube_index * NUM_MOVES + move_index;
-
             for (sticker_index, sticker_value) in sticker_array.iter().enumerate() {
-                array[[row_index, sticker_index]] = *sticker_value;
+                row[sticker_index] = *sticker_value;
             }
-        }
-    }
+        });
 
     array
 }

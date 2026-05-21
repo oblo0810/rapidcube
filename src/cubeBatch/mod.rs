@@ -2,7 +2,6 @@ use ndarray::Array2;
 use pyo3::exceptions::PyTypeError;
 use pyo3::prelude::*;
 
-use crate::cube;
 use crate::cube2x2::Cube2x2;
 use crate::cube3x3::Cube3x3;
 

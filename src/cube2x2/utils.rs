@@ -109,6 +109,10 @@ impl Cube for Cube2x2 {
         Cube2x2::apply_move_index_internal(self, move_index);
     }
 
+    fn undo_move_index_internal(&mut self, move_index: usize) {
+        Cube2x2::undo_move_index_internal(self, move_index);
+    }
+
     fn do_u_move_internal(&mut self) {
         Cube2x2::do_u_move_internal(self);
     }

@@ -196,6 +196,10 @@ impl Cube for Cube3x3 {
         Cube3x3::apply_move_index_internal(self, move_index);
     }
 
+    fn undo_move_index_internal(&mut self, move_index: usize) {
+        Cube3x3::undo_move_index_internal(self, move_index);
+    }
+
     fn do_u_move_internal(&mut self) {
         self.do_u_move_corners();
         self.do_u_move_edges();
