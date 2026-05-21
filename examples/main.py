@@ -36,6 +36,16 @@ def demo_array():
     print(get_next_states(cubes))
 
 
+def demo_scramble():
+    cube = Cube2x2()
+    print(cube)
+    cube.scramble(10)
+    print(cube)
+    cube = Cube2x2()
+    cube.scramble()
+    print(cube)
+
+
 # def encode_state():
 #     cube = Cube2x2()
 #     str_state = "00" + "{0:b}".format(cube.state)
@@ -52,10 +62,10 @@ def demo_array():
 
 
 def demo_cubeBatch():
-    batch = CubeBatch(3, 2)
+    batch = CubeBatch(1, 2)
     print(torch.tensor(batch.get_next_states()))
 
 
 if __name__ == "__main__":
     # _ = encode_state()
-    demo_cubeBatch()
+    demo_scramble()

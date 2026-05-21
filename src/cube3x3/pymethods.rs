@@ -129,4 +129,11 @@ impl Cube3x3 {
         Cube::do_moves_internal(self, &moves);
         Ok(())
     }
+
+    /// Apply a random scramble of the given length.
+    #[pyo3(signature = (scramble_length=20))]
+    pub fn scramble(&mut self, scramble_length: i64) -> PyResult<()> {
+        Cube::scramble_internal(self, scramble_length);
+        Ok(())
+    }
 }

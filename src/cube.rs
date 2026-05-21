@@ -1,5 +1,6 @@
 use ndarray::Array2;
 use rayon::prelude::*;
+use rand::prelude::*;
 
 pub(crate) trait Cube: Sized {
     const STICKER_DIM: usize;
@@ -10,8 +11,6 @@ pub(crate) trait Cube: Sized {
     fn state_copy_internal(&self) -> Self;
     fn sticker_array_internal(&self) -> Vec<i64>;
 
-    fn apply_move_index_internal(&mut self, move_index: usize);
-    fn undo_move_index_internal(&mut self, move_index: usize);
     fn do_u_move_internal(&mut self);
     fn do_u_prime_move_internal(&mut self);
     fn do_d_move_internal(&mut self);
@@ -66,6 +65,52 @@ pub(crate) trait Cube: Sized {
                 }
                 _ => continue,
             }
+        }
+    }
+
+    fn apply_move_index_internal(&mut self, move_index: usize) {
+        match move_index {
+            0 => self.do_u_move_internal(),
+            1 => self.do_u_prime_move_internal(),
+            2 => self.do_d_move_internal(),
+            3 => self.do_d_prime_move_internal(),
+            4 => self.do_r_move_internal(),
+            5 => self.do_r_prime_move_internal(),
+            6 => self.do_l_move_internal(),
+            7 => self.do_l_prime_move_internal(),
+            8 => self.do_f_move_internal(),
+            9 => self.do_f_prime_move_internal(),
+            10 => self.do_b_move_internal(),
+            11 => self.do_b_prime_move_internal(),
+            _ => {}
+        }
+    }
+
+    fn undo_move_index_internal(&mut self, move_index: usize) {
+        match move_index {
+            0 => self.do_u_prime_move_internal(),
+            1 => self.do_u_move_internal(),
+            2 => self.do_d_prime_move_internal(),
+            3 => self.do_d_move_internal(),
+            4 => self.do_r_prime_move_internal(),
+            5 => self.do_r_move_internal(),
+            6 => self.do_l_prime_move_internal(),
+            7 => self.do_l_move_internal(),
+            8 => self.do_f_prime_move_internal(),
+            9 => self.do_f_move_internal(),
+            10 => self.do_b_prime_move_internal(),
+            11 => self.do_b_move_internal(),
+            _ => {}
+        }
+    }
+
+    fn scramble_internal(&mut self, scramble_length: i64) {
+        let mut rng = rand::rng(); 
+        
+        for _ in 0..scramble_length {
+            // gen_range is now random_range
+            let move_index = rng.random_range(0..12); 
+            self.apply_move_index_internal(move_index);
         }
     }
 }

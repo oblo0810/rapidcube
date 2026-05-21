@@ -1,6 +1,6 @@
 [package]
 name = "rapidcube"
-version = "0.1.12"
+version = "0.1.14"
 edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -13,3 +13,4 @@ pyo3 = { version = "0.28.3" }
 numpy = "0.28.0"
 ndarray = "0.17"
 rayon = "1.12"
+rand = "0.10.1"
