@@ -1,3 +1,4 @@
+use numpy::{IntoPyArray, PyArray2};
 use pyo3::exceptions::PyIndexError;
 use pyo3::prelude::*;
 use pyo3::types::PyAny;
@@ -9,6 +10,11 @@ impl CubeBatch {
     #[new]
     pub fn new(count: usize, cube_type: usize) -> PyResult<Self> {
         Self::from_count_internal(count, cube_type)
+    }
+
+    pub fn get_next_states(&self, py: Python<'_>) -> PyResult<Py<PyArray2<i64>>> {
+        let states = py.detach(|| self.next_states_internal())?;
+        Ok(states.into_pyarray(py).unbind())
     }
 
     pub fn __len__(&self) -> usize {
@@ -29,5 +35,4 @@ impl CubeBatch {
 
         self.item_at_internal(py, adjusted_index as usize)
     }
-
 }
