@@ -71,13 +71,11 @@ impl CubeBatch {
     pub(crate) fn scramble_batch_internal(&mut self, scramble_lengths: &[i64]) -> PyResult<()> {
         match &mut self.cubes {
             CubeBatchStorage::Cube2x2(cubes) => {
-                // 1. Switch to par_iter_mut() and par_iter()
                 cubes.par_iter_mut()
                     .zip(scramble_lengths.par_iter())
-                    // 2. Use for_each_init to create the RNG once per Rayon thread
                     .for_each_init(
-                        || rand::make_rng::<ChaCha8Rng>(), // Init closure (runs once per thread)
-                        |rng, (cube, &length)| {           // Execution closure (runs for each cube)
+                        || rand::make_rng::<ChaCha8Rng>(), 
+                        |rng, (cube, &length)| {
                             cube.scramble_internal(length, rng);
                         }
                     );
