@@ -1,4 +1,4 @@
-use numpy::{IntoPyArray, PyArray2};
+use numpy::{IntoPyArray, PyArray2, PyReadonlyArray1};
 use pyo3::exceptions::PyIndexError;
 use pyo3::prelude::*;
 use pyo3::types::PyAny;
@@ -15,6 +15,11 @@ impl CubeBatch {
     pub fn get_next_states(&self, py: Python<'_>) -> PyResult<Py<PyArray2<i64>>> {
         let states = py.detach(|| self.next_states_internal())?;
         Ok(states.into_pyarray(py).unbind())
+    }
+
+    pub fn scramble(&mut self, scramble_lengths: PyReadonlyArray1<'_, i64>) -> PyResult<()> {
+        let scramble_lengths_rust: &[i64] = scramble_lengths.as_slice().unwrap();
+        self.scramble_batch_internal(scramble_lengths_rust)
     }
 
     pub fn __len__(&self) -> usize {

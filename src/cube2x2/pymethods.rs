@@ -116,7 +116,8 @@ impl Cube2x2 {
     /// Apply a random scramble of the given length.
     #[pyo3(signature = (scramble_length=20))]
     pub fn scramble(&mut self, scramble_length: i64) -> PyResult<()> {
-        Cube::scramble_internal(self, scramble_length);
+        let mut local_rng = rand::rng();
+        Cube::scramble_internal(self, scramble_length, &mut local_rng);
         Ok(())
     }
 }

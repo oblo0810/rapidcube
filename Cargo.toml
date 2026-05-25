@@ -13,4 +13,4 @@ pyo3 = { version = "0.28.3" }
 numpy = "0.28.0"
 ndarray = "0.17"
 rayon = "1.12"
-rand = "0.10.1"
+rand = { version = "0.10.1", features = ["sys_rng", "chacha"] }

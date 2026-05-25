@@ -2,8 +2,12 @@ use ndarray::Array2;
 use pyo3::exceptions::PyTypeError;
 use pyo3::prelude::*;
 
+use rayon::prelude::*;
+use rand::rngs::ChaCha8Rng;
+
 use crate::cube2x2::Cube2x2;
 use crate::cube3x3::Cube3x3;
+use crate::cube::Cube;
 
 mod pymethods;
 
@@ -61,6 +65,35 @@ impl CubeBatch {
         match &self.cubes {
             CubeBatchStorage::Cube2x2(cubes) => Ok(crate::cube::next_states_internal(cubes)),
             CubeBatchStorage::Cube3x3(cubes) => Ok(crate::cube::next_states_internal(cubes)),
+        }
+    }
+
+    pub(crate) fn scramble_batch_internal(&mut self, scramble_lengths: &[i64]) -> PyResult<()> {
+        match &mut self.cubes {
+            CubeBatchStorage::Cube2x2(cubes) => {
+                // 1. Switch to par_iter_mut() and par_iter()
+                cubes.par_iter_mut()
+                    .zip(scramble_lengths.par_iter())
+                    // 2. Use for_each_init to create the RNG once per Rayon thread
+                    .for_each_init(
+                        || rand::make_rng::<ChaCha8Rng>(), // Init closure (runs once per thread)
+                        |rng, (cube, &length)| {           // Execution closure (runs for each cube)
+                            cube.scramble_internal(length, rng);
+                        }
+                    );
+                Ok(())
+            }
+            CubeBatchStorage::Cube3x3(cubes) => {
+                cubes.par_iter_mut()
+                    .zip(scramble_lengths.par_iter())
+                    .for_each_init(
+                        || rand::make_rng::<ChaCha8Rng>(), 
+                        |rng, (cube, &length)| {
+                            cube.scramble_internal(length, rng);
+                        }
+                    );
+                Ok(())
+            }
         }
     }
 }

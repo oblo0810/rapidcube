@@ -1,6 +1,7 @@
 use ndarray::Array2;
 use rayon::prelude::*;
 use rand::prelude::*;
+use rand::Rng;
 
 pub(crate) trait Cube: Sized {
     const STICKER_DIM: usize;
@@ -104,11 +105,8 @@ pub(crate) trait Cube: Sized {
         }
     }
 
-    fn scramble_internal(&mut self, scramble_length: i64) {
-        let mut rng = rand::rng(); 
-        
+    fn scramble_internal(&mut self, scramble_length: i64, rng: &mut impl Rng) {
         for _ in 0..scramble_length {
-            // gen_range is now random_range
             let move_index = rng.random_range(0..12); 
             self.apply_move_index_internal(move_index);
         }
