@@ -24,6 +24,24 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
+                    <a class="class" href="#CubeBatch">CubeBatch</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#CubeBatch.apply_move_indexes">apply_move_indexes</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#CubeBatch.get_next_states">get_next_states</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#CubeBatch.scramble">scramble</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#CubeBatch.len">len</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#Cube2x2">Cube2x2</a>
                             <ul class="memberlist">
                         <li>
@@ -31,6 +49,9 @@
                         </li>
                         <li>
                                 <a class="function" href="#Cube2x2.get_corners">get_corners</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Cube2x2.to_sticker_array">to_sticker_array</a>
                         </li>
                         <li>
                                 <a class="function" href="#Cube2x2.is_solved">is_solved</a>
@@ -75,6 +96,9 @@
                                 <a class="function" href="#Cube2x2.do_moves">do_moves</a>
                         </li>
                         <li>
+                                <a class="function" href="#Cube2x2.scramble">scramble</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#Cube2x2.state">state</a>
                         </li>
                 </ul>
@@ -97,6 +121,9 @@
                         </li>
                         <li>
                                 <a class="function" href="#Cube3x3.get_edges">get_edges</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Cube3x3.to_sticker_array">to_sticker_array</a>
                         </li>
                         <li>
                                 <a class="function" href="#Cube3x3.is_solved">is_solved</a>
@@ -141,10 +168,19 @@
                                 <a class="function" href="#Cube3x3.do_moves">do_moves</a>
                         </li>
                         <li>
+                                <a class="function" href="#Cube3x3.scramble">scramble</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#Cube3x3.corners">corners</a>
                         </li>
                 </ul>
 
+            </li>
+            <li>
+                    <a class="function" href="#inverse_scramble">inverse_scramble</a>
+            </li>
+            <li>
+                    <a class="function" href="#get_next_states">get_next_states</a>
             </li>
     </ul>
 
@@ -176,6 +212,85 @@ rapidcube    </h1>
 
 
             </section>
+                <section id="CubeBatch">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">CubeBatch</span>:
+
+        
+    </div>
+    <a class="headerlink" href="#CubeBatch"></a>
+    
+    
+
+                            <div id="CubeBatch.apply_move_indexes" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">apply_move_indexes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">/</span>, </span><span class="param"><span class="n">move_indexes</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#CubeBatch.apply_move_indexes"></a>
+    
+            <div class="docstring"><p>The type of the None singleton.</p>
+</div>
+
+
+                            </div>
+                            <div id="CubeBatch.get_next_states" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">get_next_states</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#CubeBatch.get_next_states"></a>
+    
+            <div class="docstring"><p>Return successor states for all cubes using the 12 quarter-turn moves.</p>
+
+<p>Returns a NumPy int64 array with shape (len(self) * 12, sticker_dim).</p>
+</div>
+
+
+                            </div>
+                            <div id="CubeBatch.scramble" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">scramble</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">/</span>, </span><span class="param"><span class="n">scramble_lengths</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#CubeBatch.scramble"></a>
+    
+            <div class="docstring"><p>Scramble each cube with the corresponding number of random moves.</p>
+
+<p>The <code>scramble_lengths</code> array is zipped with the batch. If it is shorter
+than the batch, only the first N cubes are scrambled. Extra lengths are
+ignored.</p>
+</div>
+
+
+                            </div>
+                            <div id="CubeBatch.len" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">len</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#CubeBatch.len"></a>
+    
+            <div class="docstring"><p>Return the number of cubes in the batch.</p>
+</div>
+
+
+                            </div>
+                </section>
                 <section id="Cube2x2">
                     <div class="attr class">
             
@@ -216,6 +331,21 @@ rapidcube    </h1>
     <a class="headerlink" href="#Cube2x2.get_corners"></a>
     
             <div class="docstring"><p>Return the corner state as an array.</p>
+</div>
+
+
+                            </div>
+                            <div id="Cube2x2.to_sticker_array" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">to_sticker_array</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#Cube2x2.to_sticker_array"></a>
+    
+            <div class="docstring"><p>The type of the None singleton.</p>
 </div>
 
 
@@ -430,6 +560,21 @@ rapidcube    </h1>
 
 
                             </div>
+                            <div id="Cube2x2.scramble" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">scramble</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">/</span>, </span><span class="param"><span class="n">scramble_length</span><span class="o">=</span><span class="mi">20</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#Cube2x2.scramble"></a>
+    
+            <div class="docstring"><p>Apply a random scramble of the given length.</p>
+</div>
+
+
+                            </div>
                             <div id="Cube2x2.state" class="classattr">
                                 <div class="attr variable">
             <span class="name">state</span>
@@ -525,6 +670,22 @@ rapidcube    </h1>
     <a class="headerlink" href="#Cube3x3.get_edges"></a>
     
             <div class="docstring"><p>Return the edge state as an array.</p>
+</div>
+
+
+                            </div>
+                            <div id="Cube3x3.to_sticker_array" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">to_sticker_array</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#Cube3x3.to_sticker_array"></a>
+    
+            <div class="docstring"><p>Return the cube state as an array of 54 sticker colors.
+The stickers are ordered as follows: U face (9 stickers), R face (9 stickers), D face (9 stickers), L face (9 stickers), L face (9 stickers), B face (9 stickers).</p>
 </div>
 
 
@@ -739,6 +900,21 @@ rapidcube    </h1>
 
 
                             </div>
+                            <div id="Cube3x3.scramble" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">scramble</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">/</span>, </span><span class="param"><span class="n">scramble_length</span><span class="o">=</span><span class="mi">20</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#Cube3x3.scramble"></a>
+    
+            <div class="docstring"><p>Apply a random scramble of the given length.</p>
+</div>
+
+
+                            </div>
                             <div id="Cube3x3.corners" class="classattr">
                                 <div class="attr variable">
             <span class="name">corners</span>
@@ -750,6 +926,36 @@ rapidcube    </h1>
     
 
                             </div>
+                </section>
+                <section id="inverse_scramble">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">inverse_scramble</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">scramble</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#inverse_scramble"></a>
+    
+            <div class="docstring"><p>Return the inverse of the given scramble string.</p>
+</div>
+
+
+                </section>
+                <section id="get_next_states">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">get_next_states</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">cubes</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#get_next_states"></a>
+    
+            <div class="docstring"><p>Return quarter-turn successors for a batch of 2x2 or 3x3 cubes.</p>
+</div>
+
+
                 </section>
     </main>
 </body>

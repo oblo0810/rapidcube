@@ -87,8 +87,8 @@ pub(crate) trait Cube: Sized {
         }
     }
 
-    fn undo_move_index_internal(&mut self, move_index: usize) {
-        match move_index {
+    fn _undo_move_index_internal(&mut self, move_index: usize) {
+        match move_index { 
             0 => self.do_u_prime_move_internal(),
             1 => self.do_u_move_internal(),
             2 => self.do_d_prime_move_internal(),

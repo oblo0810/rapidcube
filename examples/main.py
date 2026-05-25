@@ -62,10 +62,13 @@ def demo_scramble():
 
 
 def demo_cubeBatch():
-    batch = CubeBatch(1, 2)
+    batch = CubeBatch(3, 2)
     print(torch.tensor(batch.get_next_states()))
+    scramble_lengths = torch.arange(1, 4, dtype=torch.int64)
+    batch.scramble(scramble_lengths.numpy())
+    print(batch)
 
 
 if __name__ == "__main__":
     # _ = encode_state()
-    demo_scramble()
+    demo_cubeBatch()

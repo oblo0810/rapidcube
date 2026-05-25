@@ -3,7 +3,8 @@ use pyo3::exceptions::PyIndexError;
 use pyo3::prelude::*;
 use pyo3::types::PyAny;
 
-use super::CubeBatch;
+use crate::cube::Cube;
+use super::{CubeBatch, CubeBatchStorage};
 
 #[pymethods]
 impl CubeBatch {
@@ -18,6 +19,11 @@ impl CubeBatch {
     ///     TypeError: If `cube_type` is not 2 or 3.
     pub fn new(count: usize, cube_type: usize) -> PyResult<Self> {
         Self::from_count_internal(count, cube_type)
+    }
+
+    pub fn apply_move_indexes(&mut self, move_indexes: PyReadonlyArray1<'_, usize>) -> PyResult<()> {
+        let move_indexes_rust: &[usize] = move_indexes.as_slice().unwrap();
+        self.apply_move_indexes_internal(move_indexes_rust)
     }
 
     /// Return successor states for all cubes using the 12 quarter-turn moves.
@@ -61,5 +67,21 @@ impl CubeBatch {
         }
 
         self.item_at_internal(py, adjusted_index as usize)
+    }
+
+    /// Return ANSI-colored renderings of all cubes in the batch.
+    fn __str__(&self) -> String {
+        let rendered = match &self.cubes {
+            CubeBatchStorage::Cube2x2(cubes) => cubes
+                .iter()
+                .map(|cube| Cube::render_ansi_internal(cube))
+                .collect::<Vec<_>>(),
+            CubeBatchStorage::Cube3x3(cubes) => cubes
+                .iter()
+                .map(|cube| Cube::render_ansi_internal(cube))
+                .collect::<Vec<_>>(),
+        };
+
+        rendered.join("\n\n")
     }
 }

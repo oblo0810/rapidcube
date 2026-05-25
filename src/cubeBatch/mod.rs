@@ -61,6 +61,27 @@ impl CubeBatch {
         self.cubes.get_py_internal(py, index)
     }
 
+    pub(crate) fn apply_move_indexes_internal(&mut self, move_indexes: &[usize]) -> PyResult<()> {
+        match &mut self.cubes {
+            CubeBatchStorage::Cube2x2(cubes) => {
+                cubes.par_iter_mut()
+                    .zip(move_indexes.par_iter())
+                    .for_each(|(cube, &move_index)| {
+                        cube.apply_move_index_internal(move_index);
+                    });
+                Ok(())
+            }
+            CubeBatchStorage::Cube3x3(cubes) => {
+                cubes.par_iter_mut()
+                    .zip(move_indexes.par_iter())
+                    .for_each(|(cube, &move_index)| {
+                        cube.apply_move_index_internal(move_index);
+                    });
+                Ok(())
+            }
+        }
+    }
+
     pub(crate) fn next_states_internal(&self) -> PyResult<Array2<i64>> {
         match &self.cubes {
             CubeBatchStorage::Cube2x2(cubes) => Ok(crate::cube::next_states_internal(cubes)),

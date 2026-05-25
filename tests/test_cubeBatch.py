@@ -1,10 +1,27 @@
 import unittest
 
+import numpy as np
+
 import rapidcube
 
 CubeBatch = rapidcube.CubeBatch
 Cube2x2 = rapidcube.Cube2x2
 Cube3x3 = rapidcube.Cube3x3
+
+MOVE_INDEX_METHODS = [
+    "do_u_move",
+    "do_u_prime_move",
+    "do_d_move",
+    "do_d_prime_move",
+    "do_r_move",
+    "do_r_prime_move",
+    "do_l_move",
+    "do_l_prime_move",
+    "do_f_move",
+    "do_f_prime_move",
+    "do_b_move",
+    "do_b_prime_move",
+]
 
 
 class TestCubeBatch(unittest.TestCase):
@@ -52,3 +69,47 @@ class TestCubeBatch(unittest.TestCase):
         self.assertEqual(len(items), 3)
         for item in items:
             self.assertIsInstance(item, Cube2x2)
+
+    def test_apply_move_indexes_2x2(self):
+        batch = CubeBatch(3, 2)
+        move_indexes = np.array([0, 5, 10], dtype=np.uintp)
+
+        batch.apply_move_indexes(move_indexes)
+
+        expected = [Cube2x2(), Cube2x2(), Cube2x2()]
+        for cube, move_index in zip(expected, move_indexes):
+            getattr(cube, MOVE_INDEX_METHODS[int(move_index)])()
+
+        for i, cube in enumerate(expected):
+            self.assertEqual(batch[i].state, cube.state)
+
+    def test_apply_move_indexes_3x3(self):
+        batch = CubeBatch(2, 3)
+        move_indexes = np.array([1, 8], dtype=np.uintp)
+
+        batch.apply_move_indexes(move_indexes)
+
+        expected = [Cube3x3(), Cube3x3()]
+        for cube, move_index in zip(expected, move_indexes):
+            getattr(cube, MOVE_INDEX_METHODS[int(move_index)])()
+
+        for i, cube in enumerate(expected):
+            self.assertEqual(batch[i].to_binary(), cube.to_binary())
+
+    def test_scramble_length_zero_keeps_solved(self):
+        batch = CubeBatch(4, 2)
+        scramble_lengths = np.zeros(4, dtype=np.int64)
+
+        batch.scramble(scramble_lengths)
+
+        for i in range(len(batch)):
+            self.assertTrue(batch[i].is_solved())
+
+    def test_scramble_length_one_unsolves(self):
+        batch = CubeBatch(4, 3)
+        scramble_lengths = np.ones(4, dtype=np.int64)
+
+        batch.scramble(scramble_lengths)
+
+        for i in range(len(batch)):
+            self.assertFalse(batch[i].is_solved())
