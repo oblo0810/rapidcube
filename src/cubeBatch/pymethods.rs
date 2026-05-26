@@ -34,6 +34,14 @@ impl CubeBatch {
         Ok(states.into_pyarray(py).unbind())
     }
 
+    /// Return the cube states as a sticker array with shape (len(self), sticker_dim).
+    ///
+    /// Returns a NumPy int64 array with shape (len(self), sticker_dim).
+    pub fn to_sticker_array(&self, py: Python<'_>) -> PyResult<Py<PyArray2<i64>>> {
+        let states = py.detach(|| self.sticker_arrays_internal())?;
+        Ok(states.into_pyarray(py).unbind())
+    }
+
     /// Scramble each cube with the corresponding number of random moves.
     ///
     /// The `scramble_lengths` array is zipped with the batch. If it is shorter

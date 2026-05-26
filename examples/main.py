@@ -69,6 +69,12 @@ def demo_cubeBatch():
     print(batch)
 
 
+def demo_cubeBatch2():
+    batch = CubeBatch(1, 2)
+    print(batch)
+    print(torch.from_numpy(batch.to_sticker_array()))
+
+
 if __name__ == "__main__":
     # _ = encode_state()
-    demo_cubeBatch()
+    demo_cubeBatch2()

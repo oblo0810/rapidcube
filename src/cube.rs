@@ -139,3 +139,22 @@ pub(crate) fn next_states_internal<C: Cube + Sync>(cubes: &[C]) -> Array2<i64> {
 
     array
 }
+
+pub(crate) fn sticker_arrays_internal<C: Cube + Sync>(cubes: &[C]) -> Array2<i64> {
+    let rows = cubes.len();
+    let mut array = Array2::<i64>::zeros((rows, C::STICKER_DIM));
+
+    array
+        .as_slice_mut()
+        .expect("Array2 must be contiguous")
+        .par_chunks_mut(C::STICKER_DIM)
+        .enumerate()
+        .for_each(|(row_index, row)| {
+            let sticker_array = cubes[row_index].sticker_array_internal();
+            for (sticker_index, sticker_value) in sticker_array.iter().enumerate() {
+                row[sticker_index] = *sticker_value;
+            }
+        });
+
+    array
+}

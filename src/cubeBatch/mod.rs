@@ -89,6 +89,13 @@ impl CubeBatch {
         }
     }
 
+    pub(crate) fn sticker_arrays_internal(&self) -> PyResult<Array2<i64>> {
+        match &self.cubes {
+            CubeBatchStorage::Cube2x2(cubes) => Ok(crate::cube::sticker_arrays_internal(cubes)),
+            CubeBatchStorage::Cube3x3(cubes) => Ok(crate::cube::sticker_arrays_internal(cubes)),
+        }
+    }
+
     pub(crate) fn scramble_batch_internal(&mut self, scramble_lengths: &[i64]) -> PyResult<()> {
         match &mut self.cubes {
             CubeBatchStorage::Cube2x2(cubes) => {
